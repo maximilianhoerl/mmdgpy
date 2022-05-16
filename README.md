@@ -20,7 +20,7 @@ source dune-env/bin/activate
 
 2. Clone the repository and install `mmdgpy` and its dependencies using `pip`.
 ````
-git clone https://gitlab.mathematik.uni-stuttgart.de/hoerlmn/mmdgpy.git
+git clone https://github.com/maximilianhoerl/mmdgpy.git
 pip install -e mmdgpy
 ````
 
