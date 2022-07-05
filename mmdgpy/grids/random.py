@@ -7,20 +7,20 @@ from ufl import *
 ################################################################################
 
 def get_gaussian_process(dim, mu, rho, h):
-    """! Returns the points of an equidistant grid on [0,1]^dim and two
+    """ Returns the points of an equidistant grid on [0,1]^dim and two
         realizations of a stationary Gaussian random field on this grid using a
         circulant embedding method.
 
-        @param dim  The dimension of the domain of the Gaussian field.
-        @param mu  The constant mean value of the stationary Gaussian field.
-        @param rho  The function ρ with c(x1,x2) = ρ(x1-x2) for any points x1,x2
-                    where c denotes the covariance function of the stationary
-                    Gaussian field.
-        @param h  The grid width.
-
-        @exception NotImplementedError  If dim != 1.
-        @exception LinAlgError  If the circulant embedding matrix is not
-                                positive semidefinite.
+        :param int dim: The dimension of the domain of the Gaussian field.
+        :param float mu: The constant mean value of the stationary Gaussian
+            field.
+        :param rho: The function ρ with c(x1,x2) = ρ(x1-x2) for any points x1,x2
+            where c denotes the covariance function of the stationary Gaussian
+            field.
+        :param float h: The grid width.
+        :raises NotImplementedError: If dim != 1.
+        :raises LinAlgError: If the circulant embedding matrix is not positive
+            semidefinite.
     """
     if dim != 1:
         raise NotImplementedError
@@ -47,7 +47,7 @@ def get_gaussian_process(dim, mu, rho, h):
 ################################################################################
 
 def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None):
-    """! Returns aperture functions d1, d2 on [0,1]^(dim-1) that define the
+    """ Returns aperture functions d1, d2 on [0,1]^(dim-1) that define the
         geometry of a fracture. The aperture functions are created as linear
         spline interpolants from two realizations of a (dim-1)-dimensional
         stationary Gaussian random field on an equidistant grid. The fracture is
@@ -55,19 +55,19 @@ def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None):
         this, values of the discrete Gaussian field are substituted accordingly
         if necessary.
 
-        @param dim  The bulk dimension.
-        @param mu  The constant mean value of the stationary Gaussian field.
-        @param rho  The function ρ with c(x1,x2) = ρ(x1-x2) for any points x1,x2
-                    where c denotes the covariance function of the stationary
-                    Gaussian field.
-        @param h  The grid width.
-        @param dmin  (optional) The minimum aperture of the fracture. The
-                     default value is 1e-6.
-        @param file  (optional) A filename. The value of the Gaussian aperture
-                     and the corresponding grid are saved to the file if a
-                     filename is provided. By default no such file is created.
-
-        @exception NotImplementedError  If dim != 2.
+        :param int dim: The bulk dimension.
+        :param float mu: The constant mean value of the stationary Gaussian
+            field.
+        :param rho: The function ρ with c(x1,x2) = ρ(x1-x2) for any points x1,x2
+            where c denotes the covariance function of the stationary Gaussian
+            field.
+        :param float h: The grid width.
+        :param float dmin: The minimum aperture of the fracture. Defaults to
+            1e-6.
+        :param file: A filename. The value of the Gaussian aperture and the
+            corresponding grid are saved to the file if a filename is provided.
+            By default no such file is created.
+        :raises NotImplementedError: If dim != 2.
     """
     if dim != 2:
         raise NotImplementedError

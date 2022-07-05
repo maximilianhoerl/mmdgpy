@@ -4,30 +4,57 @@ from dune.mmesh import trace, normals
 from mmdgpy.dg.mmdg2 import MMDG2
 
 class MMDG1(MMDG2):
-    """! A discontinuous Galerkin scheme in d=2,3 dimensions with a reduced
+    """ A discontinuous Galerkin scheme in d=2,3 dimensions with a reduced
         fracture of variable aperture. Aperture gradients are included.
+
+        :ivar MMDGProblem problem: A problem implementing the interface
+            MMDGProblem.
+        :ivar omega: The bulk grid view.
+        :ivar space: The bulk dG space.
+        :ivar x: The bulk spatial coordinate.
+        :ivar dm: A domain marker.
+        :ivar chi_gamma: An interface indicator.
+        :ivar p: The bulk trial function.
+        :ivar phi: The bulk test function.
+        :ivar n: The bulk facet normal.
+        :ivar ph: The bulk numerical solution.
+        :ivar iterms: An integrand on internal bulk facets.
+        :ivar b_bulk: The bilinear form of bulk contributions.
+        :ivar l_bulk: The linear form of bulk contributions.
+        :ivar storage: The underlying linear algebra backend.
+        :ivar igridview: The interface grid view.
+        :ivar ispace: The interface dG space.
+        :ivar x_gamma: The interface spatial coordinate.
+        :ivar phi_gamma: The interface test function.
+        :ivar n_gamma: The interface facet normal.
+        :ivar ph_gamma: The interface numerical solution.
+        :ivar b_gamma: The bilinear form of interface contributions.
+        :ivar l_gamma: The linear form of interface contributions.
+        :ivar c_bulk: The bilinear form of coupling terms (with bulk test
+            function).
+        :ivar c_gamma: The bilinear form of coupling terms (with interface test
+            function).
     """
 
     def __init__(self, dim, order, gridfile, problem, mu0, xi=2./3., \
      contortion=True, trafo=None):
-        """! The constructor.
+        """ The constructor.
 
-            @param dim  (int) The bulk dimension dim=2,3.
-            @param order  (int) The order of accuracy >= 1 of the dG method.
-            @param gridfile  A .msh grid file.
-            @param problem  A problem class implementing the interface
-                            MMDGProblem.
-            @param mu0  (int) A penalty parameter that must be chosen
-                        sufficiently large.
-            @param xi  (optional) A coupling parameter. The default value is
-                       2/3.
-            @param contortion  (bool, optional) A boolean that indicates whether
-                               the domain is to be contorted according to a
-                               given transformation. The default value is False.
-            @param trafo  (optional) A transformation function depending on the
-                          spatial coordinate and the domain marker that
-                          determines the contortion of the domain. By default
-                          the transformation of the given problem is used.
+            :param int dim: The bulk dimension dim=2,3.
+            :param int order: The order of accuracy >= 1 of the dG method.
+            :param str gridfile: A .msh grid file.
+            :param MMDGProblem problem: A problem implementing the interface
+                MMDGProblem.
+            :param float mu0: A penalty parameter that must be chosen
+                sufficiently large.
+            :param float xi: A coupling parameter. Defaults to 2/3.
+            :param bool contortion: A boolean that indicates whether the domain
+                is to be contorted according to a given transformation. Defaults
+                to False.
+            :param trafo: A transformation function depending on the spatial
+                coordinate and the domain marker that determines the contortion
+                of the domain. By default the transformation of the given
+                problem is used.
         """
         super().__init__(dim, order, gridfile, problem, mu0, xi=xi, \
          contortion=contortion, trafo=trafo)

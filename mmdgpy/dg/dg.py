@@ -11,57 +11,43 @@ from dune.fem.view import geometryGridView
 class DG:
     """ A discontinuous Galerkin scheme in d=2,3 dimensions without reduced
         fracture.
+
+        :ivar DGProblem problem: A problem implementing the interface DGProblem.
+        :ivar omega: The bulk grid view.
+        :ivar space: The bulk dG space.
+        :ivar x: The bulk spatial coordinate.
+        :ivar dm: A domain marker.
+        :ivar chi_gamma: An interface indicator.
+        :ivar p: The bulk trial function.
+        :ivar phi: The bulk test function.
+        :ivar n: The bulk facet normal.
+        :ivar ph: The bulk numerical solution.
+        :ivar iterms: An integrand on internal bulk facets.
+        :ivar b_bulk: The bilinear form of bulk contributions.
+        :ivar l_bulk: The linear form of bulk contributions.
+        :ivar storage: The underlying linear algebra backend.
     """
-    # Attributes:
-    ## @var problem
-    # A problem implementing the interface DGProblem.
-    ## @var omega
-    # The bulk grid view.
-    ## @var space
-    # The bulk dG space.
-    ## @var x
-    # The bulk spatial coordinate.
-    ## @var dm
-    # A domain marker.
-    ## @var chi_gamma
-    # An interface indicator.
-    ## @var p
-    # The bulk trial function.
-    ## @var phi
-    # The bulk test function.
-    ## @var n
-    # The bulk facet normal.
-    ## @var ph
-    # The bulk numerical solution.
-    ## @var iterms
-    # An integrand on internal bulk facets.
-    ## @var b_bulk
-    # The bilinear form of bulk contributions.
-    ## @var l_bulk
-    # The linear form of bulk contributions.
-    ## @var storage
-    # The underlying linear algebra backend.
+
 
     def __init__(self, dim, order, gridfile, problem, mu0, contortion=False, \
      trafo=None, storage=None):
         """ The constructor.
 
-        Args:
-            dim (int): The dimension dim=2,3.
-            order (int): The order of accuracy >= 1 of the dG method.
-            gridfile (str): A grid file (dgf or msh).
-            problem (DGProblem): A problem implementing the interface DGProblem.
-            mu0 (int): A penalty parameter that must be chosen
-                sufficiently large.
-            contortion (bool, optional): A boolean that indicates whether
-                the domain is to be contorted according to a
-                given transformation. The default value is False.
-            trafo (optional): A transformation function depending on the
-                spatial coordinate and the domain marker that
-                determines the contortion of the domain. The default
-                value is None.
-            storage (optional): The underlying linear algebra backend
-                (None or 'istl'). Defaults to None.
+        :param int dim: The dimension dim=2,3.
+        :param int order: The order of accuracy >= 1 of the dG method.
+        :param str gridfile: A grid file (dgf or msh).
+        :param DGProblem problem: A problem implementing the interface
+            DGProblem.
+        :param float mu0: A penalty parameter that must be chosen sufficiently
+            large.
+        :param bool contortion: A boolean that indicates whether the domain is
+            to be contorted according to a given transformation. Defaults to
+            False.
+        :param trafo: A transformation function depending on the spatial
+            coordinate and the domain marker that determines the contortion of
+            the domain. Defaults to None.
+        :param storage: The underlying linear algebra backend (None or 'istl').
+            Defaults to None.
         """
         if gridfile.split(".")[-1] == "msh":
             grid_reader = reader.gmsh
@@ -136,14 +122,12 @@ class DG:
 
 
     def solve(self, solver=None):
-        """! Solves the discontinuous Galerkin problem.
+        """ Solves the discontinuous Galerkin problem.
 
-            @param solver  (optional): One of the following solvers. The default
-                           solver is 'umfpack' (if storage=None) or 'minres'
-                           (if storage='istl').
-                           - 'umfpack' (requires storage=None),
-                           - 'cg' (requires storage='istl'),
-                           - 'minres' (requires storage='istl').
+            :param solver: One of the following solvers: 'umfpack' (requires
+                storage=None), 'cg' (requires storage='istl'), 'minres'
+                (requires storage='istl'). The default solver is 'umfpack' (if
+                storage=None) or 'minres' (if storage='istl').
         """
         parameter.append({"fem.verboserank": 0})
 
@@ -167,12 +151,11 @@ class DG:
 
 
     def write_vtk(self, filename="pressure", filenumber=0):
-        """! Writes out the solution to VTk. Remember to call solve() first.
+        """ Writes out the solution to VTk. Remember to call solve() first.
 
-            @param filename  (optional) A filename. The default value is
-                             'pressure'.
-            @param filenumber  (int, optional) A file number if a series of
-                               problems is solved. The defaut value is 0.
+            :param str filename: A filename. Defaults to 'pressure'.
+            :param int filenumber: A file number if a series of problems is
+                solved. Defaults to 0.
         """
         uh = -self.problem.k(self.x, self.dm) * grad(self.ph)
         pointdata = {"p": self.ph, "u": uh}
@@ -193,10 +176,10 @@ class DG:
 
 
     def get_error(self, order):
-        """! Returns the L2-error of the solution. Requires that an exact
+        """ Returns the L2-error of the solution. Requires that an exact
             solution is implemented for the given problem.
 
-            @param order  (int) The order of integration.
+            :param int order: The order of integration.
         """
         return sqrt(integrate(self.omega, \
          (self.ph - self.problem.p(self.x, self.dm)) ** 2, order=order))

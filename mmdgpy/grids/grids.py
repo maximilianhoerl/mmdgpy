@@ -4,10 +4,10 @@ import numpy as np
 ################################################################################
 
 def create_dgf_grid(file, n, dim):
-    """! Writes a dgf grid file for the unit square [0,1]^dim.
+    """ Writes a dgf grid file for the unit square [0,1]^dim.
 
-        @param n  (int) The number of grid elements per direction.
-        @param dim  (int) The dimension of the domain.
+        :param int n: The number of grid elements per direction.
+        :param int dim: The dimension of the domain.
     """
     file = open(file, "w")
     file.write("DGF\n\nInterval\n")
@@ -34,14 +34,13 @@ def create_dgf_grid(file, n, dim):
 ################################################################################
 
 def create_reduced_grid(file, h, hf, dim):
-    """! Creates a msh grid file for the unit square [0,1]^dim with a vertical
+    """ Creates a msh grid file for the unit square [0,1]^dim with a vertical
         interface at x0=0.5.
 
-        @param h  A characteristic grid width for the bulk.
-        @param hf  A characteristic grid width at the interface.
-        @param dim  (int) The dimension of the domain.
-
-        @exception ValueError  If not (dim=2 or dim=3).
+        :param float h: A characteristic grid width for the bulk.
+        :param float hf: A characteristic grid width at the interface.
+        :param int dim: The dimension of the domain.
+        :raises ValueError: If not (dim=2 or dim=3).
     """
     gmsh.initialize()
     gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
@@ -125,16 +124,15 @@ def create_reduced_grid(file, h, hf, dim):
 ################################################################################
 
 def create_resolved_grid(file, d1, d2, h, hf, dim):
-    """! Creates a msh grid file for the unit square [0,1]^dim with a resolved
+    """ Creates a msh grid file for the unit square [0,1]^dim with a resolved
         vertical fracture.
 
-        @param d1  The aperture left of the interface x0=0.5.
-        @param d2  The aperture right of the interface x0=0.5.
-        @param h  A characteristic grid width for the bulk.
-        @param hf  A characteristic grid with at the interface.
-        @param dim  (int) The dimension of the domain.
-
-        @exception ValueError  If not (dim=2 or dim=3).
+        :param d1: The aperture left of the interface x0=0.5.
+        :param d2: The aperture right of the interface x0=0.5.
+        :param float h: A characteristic grid width for the bulk.
+        :param float hf: A characteristic grid with at the interface.
+        :param int dim: The dimension of the domain.
+        :raises ValueError: If not (dim=2 or dim=3).
     """
     gmsh.initialize()
     gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)

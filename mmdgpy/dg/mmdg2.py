@@ -7,51 +7,58 @@ from dune.fem.function import integrate
 from mmdgpy.dg.dg import DG
 
 class MMDG2(DG):
-    """! A discontinuous Galerkin scheme in d=2,3 dimensions with a reduced
+    """ A discontinuous Galerkin scheme in d=2,3 dimensions with a reduced
         fracture. Aperture gradients are negelected.
+
+        :ivar MMDGProblem problem: A problem implementing the interface
+            MMDGProblem.
+        :ivar omega: The bulk grid view.
+        :ivar space: The bulk dG space.
+        :ivar x: The bulk spatial coordinate.
+        :ivar dm: A domain marker.
+        :ivar chi_gamma: An interface indicator.
+        :ivar p: The bulk trial function.
+        :ivar phi: The bulk test function.
+        :ivar n: The bulk facet normal.
+        :ivar ph: The bulk numerical solution.
+        :ivar iterms: An integrand on internal bulk facets.
+        :ivar b_bulk: The bilinear form of bulk contributions.
+        :ivar l_bulk: The linear form of bulk contributions.
+        :ivar storage: The underlying linear algebra backend.
+        :ivar igridview: The interface grid view.
+        :ivar ispace: The interface dG space.
+        :ivar x_gamma: The interface spatial coordinate.
+        :ivar phi_gamma: The interface test function.
+        :ivar n_gamma: The interface facet normal.
+        :ivar ph_gamma: The interface numerical solution.
+        :ivar b_gamma: The bilinear form of interface contributions.
+        :ivar l_gamma: The linear form of interface contributions.
+        :ivar c_bulk: The bilinear form of coupling terms (with bulk test
+            function).
+        :ivar c_gamma: The bilinear form of coupling terms (with interface test
+            function).
     """
-    # Attributes:
-    ## @var igridview
-    # The interface grid view.
-    ## @var ispace
-    # The interface dG space.
-    ## @var x_gamma
-    # The interface spatial coordinate.
-    ## @var phi_gamma
-    # The interface test function.
-    ## @var n_gamma
-    # The interface facet normal.
-    ## @var ph_gamma
-    # The interface numerical solution.
-    ## @var b_gamma
-    # The bilinear form of interface contributions.
-    ## @var l_gamma
-    # The linear form of interface contributions.
-    ## @var c_bulk
-    # The bilinear form of coupling terms (with bulk test function).
-    ## @var c_gamma
-    # The bilinear form of coupling terms (with interface test function).
+
 
     def __init__(self, dim, order, gridfile, problem, mu0, xi=2./3., \
      contortion=False, trafo=None):
-        """! The constructor.
+        """ The constructor.
 
-            @param dim  (int) The bulk dimension dim=2,3.
-            @param order  (int) The order of accuracy >= 1 of the dG method.
-            @param gridfile  A .msh grid file.
-            @param problem  A problem class implementing the interface
-                            MMDGProblem.
-            @param mu0  (int) A penalty parameter that must be chosen
-                        sufficiently large.
-            @param xi  (optional) A coupling parameter. The default value is
-                       2/3.
-            @param contortion  (bool, optional) A boolean that indicates whether
-                               the domain is to be contorted according to a
-                               given transformation. The default value is False.
-            @param trafo  (optional) A transformation function depending on the
-                          spatial coordinate and the domain marker that
-                          determines the contortion of the domain. By default
-                          the transformation of the given problem is used.
+            :param int dim: The bulk dimension dim=2,3.
+            :param int order: The order of accuracy >= 1 of the dG method.
+            :param str gridfile: A .msh grid file.
+            :param MMDGProblem problem: A problem implementing the interface
+                MMDGProblem.
+            :param float mu0: A penalty parameter that must be chosen
+                sufficiently large.
+            :param float xi: A coupling parameter. Defaults to 2/3.
+            :param bool contortion: A boolean that indicates whether the domain
+                is to be contorted according to a given transformation. Defaults
+                to False.
+            :param trafo: A transformation function depending on the spatial
+                coordinate and the domain marker that determines the contortion
+                of the domain. By default the transformation of the given
+                problem is used.
         """
 
         super().__init__(dim, order, gridfile, problem, mu0, contortion, trafo)
@@ -148,38 +155,30 @@ class MMDG2(DG):
 
     def solve(self, solver='monolithic', iter=100, tol=1e-8, f_tol=1e-8, \
      eps=1e-8, accelerate=False, verbose=True):
-        """! Solves the discontinuous Galerkin problem.
+        """ Solves the discontinuous Galerkin problem.
 
-            @param solver  (optional) One of the following solvers. The default
-                           solver is 'monolithic'.
-                           - 'monolithic' for dune.mmesh.monolithicSolve,
-                           - 'iterative' for dune.mmesh.iterativeSolve,
-                           - 'bulk_only' to only to solve the bulk problem with
-                             exact solution for the fracture,
-                           - 'fracture_only' to only solve the fracture problem
-                             with exact solution for the bulk.
-
-            @param iter  (optional) The maximum number of iterations. Only
-                         relevant for 'monolithicSolve' and 'iterativeSolve'.
-                         The default value is 100.
-            @param tol  (optional) The objective residual of the iteration step
-                        in the infinity norm. Only relevant for
-                        'monolithicSolve' and 'iterativeSolve'. The defaut value
-                        is 1e-8.
-            @param f_tol  (optional) The objective residual of the function
-                          value in the infinity norm. Only relevant for
-                          'monolithicSolve'. The default value is 1e-8.
-            @param eps  (optional) The step size for finite differences. Only
-                        relevant for 'monolithicSolve'. The default value is
-                        1e-8.
-            @param accelerate  (bool, optional): Boolean that indicates whether
-                               to use a vector formulation of the fix-point
-                               iteration. Only relevant for 'iterativeSolve'.
-                               The default value is False.
-            @param verbose  (bool, optional): Boolean that indicates whether the
-                            residuum is printed for each iteration. Only
-                            relevant for 'monolithicSolve' and 'iterativeSolve'.
-                            The default value is True.
+            :param solver: One of the following solvers: 'monolithic' for
+                dune.mmesh.monolithicSolve, 'iterative' for
+                dune.mmesh.iterativeSolve, 'bulk_only' to only to solve the
+                bulk problem with exact solution for the fracture,
+                'fracture_only' to only solve the fracture problem with exact
+                solution for the bulk. Defaults to 'monolithic'.
+            :param int iter: The maximum number of iterations. Only relevant for
+                'monolithicSolve' and 'iterativeSolve'. Defaults to 100.
+            :param float tol: The objective residual of the iteration step in
+                the infinity norm. Only relevant for 'monolithicSolve' and
+                'iterativeSolve'. Defaults to 1e-8.
+            :param float f_tol: The objective residual of the function value in
+                the infinity norm. Only relevant for 'monolithicSolve'. Defaults
+                to 1e-8.
+            :param float eps: The step size for finite differences. Only
+                relevant for 'monolithicSolve'. Defaults to 1e-8.
+            :param bool accelerate: Boolean that indicates whether to use a
+                vector formulation of the fix-point iteration. Only relevant for
+                'iterativeSolve'. Defaults to False.
+            :param bool verbose: Boolean that indicates whether the residuum is
+                printed for each iteration. Only relevant for 'monolithicSolve'
+                and 'iterativeSolve'. Defaults to True.
         """
         scheme = galerkin([self.b_bulk + self.c_bulk == self.l_bulk], \
          solver=("suitesparse","umfpack"))
@@ -209,12 +208,11 @@ class MMDG2(DG):
 
 
     def write_vtk(self, filename="pressure", filenumber=0):
-        """! Writes out the solution to VTk. Remember to call solve() first.
+        """ Writes out the solution to VTk. Remember to call solve() first.
 
-            @param filename  (optional) A filename. The default value is
-                             'pressure'.
-            @param filenumber  (int, optional) A file number if a series of
-                               problems is solved. The defaut value is 0.
+            :param str filename: A filename. Defaults to 'pressure'.
+            :param int filenumber: A file number if a series of problems is
+                solved. Defaults to 0.
         """
         super().write_vtk(filename, filenumber)
 
@@ -238,11 +236,11 @@ class MMDG2(DG):
 
 
     def get_error(self, order):
-        """! Returns the L2-error for the bulk, fracture and total problem.
+        """ Returns the L2-error for the bulk, fracture and total problem.
             Requires that an exact solution is implemented for the given
             problem.
 
-            @param order  (int) The order of integration.
+            :param int order: The order of integration.
         """
         error_bulk = super().get_error(order)
         error_gamma = integrate(self.igridview, \
