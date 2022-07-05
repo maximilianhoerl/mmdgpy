@@ -45,10 +45,10 @@ The `main` directory contains a few useful scripts that demonstrate how to use `
 
 ## Documentation
 
-To build the documentation, go into the `doxygen` directory and run `doxygen`.
+The `sphinx` documentation can be build inside the `docs` directory.
 ````
-cd mmdgpy/doxygen
-doxygen
+cd mmdgpy/docs
+make html
 ````
 
 ## Literature
