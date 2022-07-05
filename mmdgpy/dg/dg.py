@@ -9,7 +9,7 @@ from dune.fem.function import integrate, uflFunction
 from dune.fem.view import geometryGridView
 
 class DG:
-    """! A discontinuous Galerkin scheme in d=2,3 dimensions without reduced
+    """ A discontinuous Galerkin scheme in d=2,3 dimensions without reduced
         fracture.
     """
     # Attributes:
@@ -44,23 +44,24 @@ class DG:
 
     def __init__(self, dim, order, gridfile, problem, mu0, contortion=False, \
      trafo=None, storage=None):
-        """! The constructor.
+        """ The constructor.
 
-            @param dim  (int) The dimension dim=2,3.
-            @param order  (int) The order of accuracy >= 1 of the dG method.
-            @param gridfile  A grid file (dgf or msh).
-            @param problem  A problem implementing the interface DGProblem.
-            @param mu0  (int) A penalty parameter that must be chosen
-                        sufficiently large.
-            @param contortion  (bool, optional) A boolean that indicates whether
-                               the domain is to be contorted according to a
-                               given transformation. The default value is False.
-            @param trafo  (optional): A transformation function depending on the
-                          spatial coordinate and the domain marker that
-                          determines the contortion of the domain. The default
-                          value is None.
-            @param storage  (optional) The underlying linear algebra backend
-                            (None or 'istl'). The default value is None.
+        Args:
+            dim (int): The dimension dim=2,3.
+            order (int): The order of accuracy >= 1 of the dG method.
+            gridfile (str): A grid file (dgf or msh).
+            problem (DGProblem): A problem implementing the interface DGProblem.
+            mu0 (int): A penalty parameter that must be chosen
+                sufficiently large.
+            contortion (bool, optional): A boolean that indicates whether
+                the domain is to be contorted according to a
+                given transformation. The default value is False.
+            trafo (optional): A transformation function depending on the
+                spatial coordinate and the domain marker that
+                determines the contortion of the domain. The default
+                value is None.
+            storage (optional): The underlying linear algebra backend
+                (None or 'istl'). Defaults to None.
         """
         if gridfile.split(".")[-1] == "msh":
             grid_reader = reader.gmsh
