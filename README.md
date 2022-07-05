@@ -6,9 +6,9 @@ It provides a full-dimensional dG scheme for bulk problems and various mixed-dim
 Fractures are represented by one-codimensional interfaces.
 A spatially varying fracture aperture is possible.
 
-The `mmdgpy` module is based on <nobr>`DUNE` [1]</nobr>. In particular, it relies on <nobr>`DUNE-MMesh` [2]</nobr> and <nobr>`DUNE-FEM` [3]</nobr>.
+The `mmdgpy` module is based on <nobr>`DUNE` [1]</nobr>. In particular, it relies on <nobr>`DUNE-MMesh` [2]</nobr> and <nobr>`DUNE-FEM` [4]</nobr>.
 
-For details, we refer to [4].
+For details, we refer to [3,5].
 
 ## Installation
 
@@ -30,8 +30,8 @@ The functions and coefficients describing a specific flow problem are to be defi
 
 Given a grid file and a problem object, a dG scheme is created as an instance of one of the following classes:
 - `DG`: a full-dimensional scheme, generally without fracture,
-- `MMDG1`: a mixed-dimensional scheme corresponding to the reduced <nobr>model I</nobr> (if `contortion=True`) or the reduced <nobr>model I-R</nobr> (if `contortion=False`) <nobr>in [4]</nobr>,
-- `MMDG2`: a mixed-dimensional scheme corresponding to the reduced <nobr>model II</nobr> (if `contortion=True`) or the reduced <nobr>model II-R</nobr> (if `contortion=False`) <nobr>in [4]</nobr>.
+- `MMDG1`: a mixed-dimensional scheme corresponding to the reduced <nobr>model I</nobr> (if `contortion=True`) or the reduced <nobr>model I-R</nobr> (if `contortion=False`) <nobr>in [3,5]</nobr>,
+- `MMDG2`: a mixed-dimensional scheme corresponding to the reduced <nobr>model II</nobr> (if `contortion=True`) or the reduced <nobr>model II-R</nobr> (if `contortion=False`) <nobr>in [3,5]</nobr>.
 
 ## Scripts
 
@@ -54,8 +54,10 @@ make html
 ## Literature
 <a id="1">[1]</a>  P. Bastian et al. *"The Dune framework: Basic concepts and recent developments."* In: Comput. Math. Appl. 81 (2021), pp. 75-112.
 
-<a id="2">[2]</a>  S. Burbulla et al. *"Dune-MMesh: The Dune Grid Module for Moving Interfaces."* In review, 2021.
+<a id="2">[2]</a>  S. Burbulla, A. Dedner, M. Hörl, and C. Rohde. *"Dune-MMesh: The Dune Grid Module for Moving Interfaces."* In: J. Open Source Softw. 7 (74) (2022), 3959.
 
-<a id="3">[3]</a>  A. Dedner et al. *"A generic interface for parallel and adaptive discretization schemes: abstraction principles and the DUNE-FEM module."* In: Comput. 90 (2010), pp. 165-196.
+<a id="3">[3]</a>  S. Burbulla, M. Hörl, and C. Rohde. *"Flow in Porous Media with Fractures of Varying Aperture."* In preparation, 2022.
 
-<a id="4">[4]</a> M. Hörl. *"Flow in Porous Media with Fractures of Varying Aperture."* Master's Thesis. University of Stuttgart, 2022.
+<a id="4">[4]</a>  A. Dedner et al. *"A generic interface for parallel and adaptive discretization schemes: abstraction principles and the DUNE-FEM module."* In: Comput. 90 (2010), pp. 165-196.
+
+<a id="5">[5]</a> M. Hörl. *"Flow in Porous Media with Fractures of Varying Aperture."* Master's Thesis. University of Stuttgart, 2022.
