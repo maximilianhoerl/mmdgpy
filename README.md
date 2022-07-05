@@ -40,8 +40,7 @@ The `main` directory contains a few useful scripts that demonstrate how to use `
 - `main_dg.py`: Tests the full-dimensional `DG` scheme under grid refinement with corresponding parameter file `params_dg.py`.
 - `main_mmdg.py`: Tests the mixed-dimensional scheme `MMDG1` or `MMDG2` under grid refinement with corresponding parameter file `params_mmdg.py`.
 - `main_comparison.py`: Solves the same flow problem with fracture using the different reduced schemes and calculates a full-dimensional reference solution. The corresponding parameter file is `params_comparison.py`.
-- `main_roughness.py`: Solves a flow problem with random Gaussian fracture using different reduced schemes and calculates a full-dimensional reference solution. The corresponding parameter file is `params_roughness.py`.
-- `plot_comparison.py`: Visualizes the simulation results obtained with the script `main_comparison.py` or `main_roughness.py`. To be executed with `pvpython` (`ParaView` version 5.10.1).
+- `plot_comparison.py`: Visualizes the simulation results obtained with the script `main_comparison.py`. To be executed with `pvpython` (`ParaView` version 5.10.1).
 
 ## Documentation
 
