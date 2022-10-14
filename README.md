@@ -21,8 +21,9 @@ source dune-env/bin/activate
 2. Clone the repository and install `mmdgpy` and its dependencies using `pip`.
 ````
 git clone https://github.com/maximilianhoerl/mmdgpy.git
+cd mmdgpy
 git checkout paper
-pip install -e mmdgpy
+pip install -e .
 ````
 
 ## Schemes

@@ -3,3 +3,4 @@ plot*
 vtk*
 *log
 *.msh
+!plot_comparison.py
