@@ -41,7 +41,7 @@ class MMDG2(DG):
 
 
     def __init__(self, dim, order, gridfile, problem, mu0, xi=2./3., \
-     contortion=False, trafo=None):
+     contortion=False, trafo=None, storage='istl'):
         """ The constructor.
 
             :param int dim: The bulk dimension dim=2,3.
@@ -59,12 +59,14 @@ class MMDG2(DG):
                 coordinate and the domain marker that determines the contortion
                 of the domain. By default the transformation of the given
                 problem is used.
+            :param storage: The underlying linear algebra backend (None or 'istl').
+                Defaults to 'istl'.
         """
 
-        super().__init__(dim, order, gridfile, problem, mu0, contortion, trafo)
+        super().__init__(dim, order, gridfile, problem, mu0, contortion, trafo, storage)
 
         self.igridview = self.omega.hierarchicalGrid.interfaceGrid
-        self.ispace = dglagrange(self.igridview, order=order)
+        self.ispace = dglagrange(self.igridview, order=order, storage=self.storage)
         self.x_gamma = SpatialCoordinate(self.ispace)
 
         mu_gamma = Constant(mu0, name="mu0_gamma") * (order + 1) \
@@ -154,7 +156,7 @@ class MMDG2(DG):
 
 
     def solve(self, solver='monolithic', iter=100, tol=1e-8, f_tol=1e-8, \
-     eps=1e-8, accelerate=False, verbose=True):
+     eps=1e-8, parameters={}, accelerate=False, verbose=True):
         """ Solves the discontinuous Galerkin problem.
 
             :param solver: One of the following solvers: 'monolithic' for
@@ -173,6 +175,7 @@ class MMDG2(DG):
                 to 1e-8.
             :param float eps: The step size for finite differences. Only
                 relevant for 'monolithicSolve'. Defaults to 1e-8.
+            :param parameters: Additional fem solver parameter map passed to the bulk scheme.
             :param bool accelerate: Boolean that indicates whether to use a
                 vector formulation of the fix-point iteration. Only relevant for
                 'iterativeSolve'. Defaults to False.
@@ -180,15 +183,13 @@ class MMDG2(DG):
                 printed for each iteration. Only relevant for 'monolithicSolve'
                 and 'iterativeSolve'. Defaults to True.
         """
-        scheme = galerkin([self.b_bulk + self.c_bulk == self.l_bulk], \
-         solver=("suitesparse","umfpack"))
-        scheme_gamma = galerkin([self.b_gamma + self.c_gamma == self.l_gamma], \
-         solver=("suitesparse","umfpack"))
+        scheme = galerkin([self.b_bulk + self.c_bulk == self.l_bulk], solver="cg", parameters=parameters)
+        scheme_gamma = galerkin([self.b_gamma + self.c_gamma == self.l_gamma])
 
         if solver == 'monolithic':
             monolithicSolve(schemes=(scheme, scheme_gamma), \
              targets=(self.ph, self.ph_gamma), iter=iter, tol=tol, f_tol=f_tol,\
-             eps=eps, verbose=verbose)
+             eps=eps, verbose=verbose, iterative=(self.storage=='istl'))
 
         elif solver == 'iterative':
             iterativeSolve(schemes=(scheme, scheme_gamma), \

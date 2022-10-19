@@ -74,7 +74,7 @@ class DG:
         self.storage = storage
         self.space = dglagrange(self.omega, order=order, storage=self.storage)
         self.x = SpatialCoordinate(self.space)
-        self.dm = domainMarker(self.omega)
+        self.dm = domainMarker(self.omega, wrapped=contortion)
         self.chi_gamma = interfaceIndicator(\
          self.omega.hierarchicalGrid.interfaceGrid, grid=self.omega)
 
@@ -165,7 +165,7 @@ class DG:
             u_exact = -self.problem.k(self.x, self.dm) \
              * grad(self.problem.p(self.x, self.dm))
 
-            pointdata.update({"p_exact": self.problem.p(self.x, self.dm), \
+            pointdata.update({"p_exact": p_exact[0], \
              "p_error": p_exact - self.ph, "u_exact": u_exact, \
              "u_error": u_exact - uh})
         except:
