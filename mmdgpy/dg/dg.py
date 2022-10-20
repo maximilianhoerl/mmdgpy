@@ -82,6 +82,7 @@ class DG:
         self.phi = TestFunction(self.space)
         self.n = FacetNormal(self.space.cell())
         self.ph = self.space.interpolate(0, name="pressure")
+        print(self.ph.size, "dofs")
 
         mu = Constant(mu0, name="mu0") * (order + 1) \
          * (order + dim) / MaxFacetEdgeLength(self.space.cell())

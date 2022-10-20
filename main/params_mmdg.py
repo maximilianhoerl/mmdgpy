@@ -12,7 +12,7 @@ from mmdgpy.problems.mmdgproblem5 import MMDGProblem5
 ###  parameter file for main_mmdg.py  ##########################################
 ################################################################################
 
-dim = 2
+dim = 3
 order = 1
 mu0 = 1000
 xi = 2./3.
@@ -20,7 +20,7 @@ xi = 2./3.
 use_mmdg1 = True
 contortion = True
 
-repeat = 5 if dim==2 else 3
+repeat = 1 #5 if dim==2 else 3
 
 # directories and file names
 grid_dir = 'grids'
@@ -34,7 +34,9 @@ iter = 100
 tol = 1e10
 f_tol = 1e-7
 eps = 1e-8
-parameters = {"newton.linear.verbose": "false"}
+parameters = {
+  "newton.linear.verbose": "true",
+}
 accelerate = False
 verbose = True
 

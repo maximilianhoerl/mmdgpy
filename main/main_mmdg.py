@@ -23,27 +23,29 @@ verbose = (comm.rank == 0)
 errors, errors_bulk, errors_gamma = [], [], []
 eocs, eocs_bulk, eocs_gamma = [], [], []
 i0 = 5
-repeat = 1
 contortion = False
 use_mmdg1 = False
+storage = "istl" # None
 
 for i in range(i0, i0 + repeat):
     if verbose:
       print(i)
 
-    create_reduced_grid(gridfile, h=0.5*2**-i, hf=0.5*2**-i, dim=dim)
+    if comm.rank == 0:
+      create_reduced_grid(gridfile, h=0.5*2**-i, hf=0.5*2**-i, dim=dim)
+    comm.barrier()
 
     if use_mmdg1:
-        mmdg = MMDG1(dim, order, gridfile, problem, mu0, xi, contortion)
+        mmdg = MMDG1(dim, order, gridfile, problem, mu0, xi, contortion, storage=storage)
     else:
-        mmdg = MMDG2(dim, order, gridfile, problem, mu0, xi, contortion)
+        mmdg = MMDG2(dim, order, gridfile, problem, mu0, xi, contortion, storage=storage)
 
     start_time = time()
 
     mmdg.solve(solver, iter, tol, f_tol, eps, parameters, accelerate, verbose)
 
     if verbose:
-      print("\Solved with a total run time of {0:.2f} Seconds.\n".format( \
+      print("Solved with a total run time of {0:.2f} Seconds.\n".format( \
        time() - start_time))
 
     mmdg.write_vtk(vtkfile, i)
