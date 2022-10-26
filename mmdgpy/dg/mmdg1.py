@@ -55,11 +55,11 @@ class MMDG1(MMDG2):
                 coordinate and the domain marker that determines the contortion
                 of the domain. By default the transformation of the given
                 problem is used.
-            :param storage: The underlying linear algebra backend (None or 'istl').
-                Defaults to None.
+            :param storage: The underlying linear algebra backend (None or
+                'istl'). Defaults to None.
         """
-        super().__init__(dim, order, gridfile, problem, mu0, xi=xi, \
-         contortion=contortion, trafo=trafo, storage=storage)
+        super().__init__(dim, order, gridfile, problem, mu0, xi, contortion, \
+         trafo, storage)
 
         if not ( is_globally_constant(problem.d1(self.x_gamma)) and \
          is_globally_constant(problem.d2(self.x_gamma)) ):

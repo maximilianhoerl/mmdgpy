@@ -102,7 +102,8 @@ class DG:
          * grad(self.phi), self.n) * self.problem.boundary_dn(self.x, self.dm) \
          * ds
         self.b_bulk -= self.phi * dot(self.problem.k(self.x, self.dm) \
-         * grad(self.p), self.n) * self.problem.boundary_dn(self.x, self.dm) * ds
+         * grad(self.p), self.n) * self.problem.boundary_dn(self.x, self.dm) \
+         * ds
 
         self.l_bulk = 0.
 

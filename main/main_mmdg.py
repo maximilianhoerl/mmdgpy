@@ -22,10 +22,7 @@ comm = MPI.COMM_WORLD
 verbose = (comm.rank == 0)
 errors, errors_bulk, errors_gamma = [], [], []
 eocs, eocs_bulk, eocs_gamma = [], [], []
-i0 = 5
-contortion = False
-use_mmdg1 = False
-storage = "istl" # None
+i0 = 0
 
 for i in range(i0, i0 + repeat):
     if verbose:
@@ -36,9 +33,11 @@ for i in range(i0, i0 + repeat):
     comm.barrier()
 
     if use_mmdg1:
-        mmdg = MMDG1(dim, order, gridfile, problem, mu0, xi, contortion, storage=storage)
+        mmdg = MMDG1(dim, order, gridfile, problem, mu0, xi, contortion, \
+         storage=storage)
     else:
-        mmdg = MMDG2(dim, order, gridfile, problem, mu0, xi, contortion, storage=storage)
+        mmdg = MMDG2(dim, order, gridfile, problem, mu0, xi, contortion, \
+         storage=storage)
 
     start_time = time()
 

@@ -12,15 +12,15 @@ from mmdgpy.problems.mmdgproblem5 import MMDGProblem5
 ###  parameter file for main_mmdg.py  ##########################################
 ################################################################################
 
-dim = 3
+dim = 2
 order = 1
-mu0 = 1000
+mu0 = 10
 xi = 2./3.
 
 use_mmdg1 = True
 contortion = True
 
-repeat = 1 #5 if dim==2 else 3
+repeat = 6 if dim==2 else 4
 
 # directories and file names
 grid_dir = 'grids'
@@ -29,6 +29,7 @@ gridfile = join(grid_dir, 'vertical.msh')
 vtkfile = join(vtk_dir, 'pressure')
 
 # parameters for solver
+storage = 'istl'
 solver = 'monolithic'
 iter = 100
 tol = 1e10

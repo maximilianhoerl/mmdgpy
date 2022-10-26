@@ -59,14 +59,16 @@ class MMDG2(DG):
                 coordinate and the domain marker that determines the contortion
                 of the domain. By default the transformation of the given
                 problem is used.
-            :param storage: The underlying linear algebra backend (None or 'istl').
-                Defaults to 'istl'.
+            :param storage: The underlying linear algebra backend (None or
+                'istl'). Defaults to 'istl'.
         """
 
-        super().__init__(dim, order, gridfile, problem, mu0, contortion, trafo, storage)
+        super().__init__(dim, order, gridfile, problem, mu0, contortion, trafo,\
+         storage)
 
         self.igridview = self.omega.hierarchicalGrid.interfaceGrid
-        self.ispace = dglagrange(self.igridview, order=order, storage=self.storage)
+        self.ispace = dglagrange(self.igridview, order=order, \
+         storage=self.storage)
         self.x_gamma = SpatialCoordinate(self.ispace)
 
         mu_gamma = Constant(mu0, name="mu0_gamma") * (order + 1) \
@@ -111,7 +113,8 @@ class MMDG2(DG):
         if self.problem.gd_gamma(self.x_gamma) != 0 and \
          self.problem.boundary_dn_gamma(self.x_gamma) != 0:
             self.l_gamma += mu_gamma * self.problem.gd_gamma(self.x_gamma) \
-             * self.phi_gamma * self.problem.boundary_dn_gamma(self.x_gamma) * ds
+             * self.phi_gamma * self.problem.boundary_dn_gamma(self.x_gamma) \
+             * ds
             self.l_gamma -= \
              self.problem.d(self.x_gamma) * self.problem.gd_gamma(self.x_gamma)\
              * dot(self.problem.k_gamma(self.x_gamma) * grad(self.phi_gamma), \
@@ -175,7 +178,8 @@ class MMDG2(DG):
                 to 1e-8.
             :param float eps: The step size for finite differences. Only
                 relevant for 'monolithicSolve'. Defaults to 1e-8.
-            :param parameters: Additional fem solver parameter map passed to the bulk scheme.
+            :param parameters: Additional fem solver parameter map passed to the
+                bulk scheme.
             :param bool accelerate: Boolean that indicates whether to use a
                 vector formulation of the fix-point iteration. Only relevant for
                 'iterativeSolve'. Defaults to False.
@@ -183,7 +187,8 @@ class MMDG2(DG):
                 printed for each iteration. Only relevant for 'monolithicSolve'
                 and 'iterativeSolve'. Defaults to True.
         """
-        scheme = galerkin([self.b_bulk + self.c_bulk == self.l_bulk], solver="cg", parameters=parameters)
+        scheme = galerkin([self.b_bulk + self.c_bulk == self.l_bulk], \
+         solver="cg", parameters=parameters)
         scheme_gamma = galerkin([self.b_gamma + self.c_gamma == self.l_gamma])
 
         if solver == 'monolithic':
