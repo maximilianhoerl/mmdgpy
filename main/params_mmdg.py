@@ -12,9 +12,9 @@ from mmdgpy.problems.mmdgproblem5 import MMDGProblem5
 ###  parameter file for main_mmdg.py  ##########################################
 ################################################################################
 
-dim = 3
+dim = 2
 order = 1
-mu0 = 1000
+mu0 = 3.01
 xi = 2./3.
 
 use_mmdg1 = True
@@ -35,7 +35,7 @@ tol = 1e10
 f_tol = 1e-7
 eps = 1e-8
 parameters = {
-  "newton.linear.verbose": "true",
+  "newton.linear.verbose": "false",
 }
 accelerate = False
 verbose = True
