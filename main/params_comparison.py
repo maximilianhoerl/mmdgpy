@@ -9,20 +9,22 @@ from dune.ufl import Constant
 
 dim = 2     # dimension
 order = 1   # order of dG space
-mu0 = 1000  # penalty parameter
+mu0 = 10    # penalty parameter
 xi = 2./3.  # coupling parameter
 
 # parameters for solver of full-dimensional scheme
-storage = None
+storage_dg = None
 solver_dg = None
 
 # parameters for solver of reduced schemes
+storage_mmdg = 'istl'
 solver_mmdg = 'monolithic'
-iter = 5000
-tol = 1e-8
+iter = 100
+tol = 1e10
 f_tol = 1e-8
 eps = 1e-8
-accelerate = True
+parameters = {"newton.linear.verbose": "true"}
+accelerate = False
 verbose = True
 
 # fracture parameters

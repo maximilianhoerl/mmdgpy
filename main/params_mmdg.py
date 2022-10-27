@@ -35,9 +35,7 @@ iter = 100
 tol = 1e10
 f_tol = 1e-7
 eps = 1e-8
-parameters = {
-  "newton.linear.verbose": "true",
-}
+parameters = {"newton.linear.verbose": "true"}
 accelerate = False
 verbose = True
 

@@ -19,7 +19,7 @@ if not exists(vtk_dir):
     mkdir(vtk_dir)
 
 comm = MPI.COMM_WORLD
-verbose = (comm.rank == 0)
+verbose = (comm.rank == 0) and verbose
 errors, errors_bulk, errors_gamma = [], [], []
 eocs, eocs_bulk, eocs_gamma = [], [], []
 i0 = 0
