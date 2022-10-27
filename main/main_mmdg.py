@@ -40,14 +40,7 @@ for i in range(i0, i0 + repeat):
     else:
         mmdg = MMDG2(dim, order, gridfile, problem, mu0, xi, contortion, storage=storage)
 
-    start_time = time()
-
     mmdg.solve(solver, iter, tol, f_tol, eps, parameters, accelerate, verbose)
-
-    if verbose:
-      print("Solved with a total run time of {0:.2f} Seconds.\n".format( \
-       time() - start_time))
-
     mmdg.write_vtk(vtkfile, i)
 
     err_bulk, err_gamma, err_total = mmdg.get_error(order)
