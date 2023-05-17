@@ -13,16 +13,15 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
-        mpi: [ 'mpich', 'openmpi', 'intelmpi']
+        mpi: ['openmpi']
 
     steps:
     - uses: actions/checkout@v3
-    - uses: mpi4py/setup-mpi@v1
-    - name: Install boost
-      uses: MarkusJx/install-boost@v1.0.1
-      id: install-boost
-      with:
-        boost_version: 1.73.0
+    - name: Install dependencies
+      run: |
+          sudo apt update
+          sudo apt install libopenmpi-dev openmpi-bin libsuitesparse-dev gmsh libboost-all-dev libmpfr-dev
+      shell: bash
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
