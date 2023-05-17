@@ -56,3 +56,6 @@ print("errors (Gamma):", errors_gamma)
 print("EOC (Gamma):", eocs_gamma)
 print("errors (total):", errors)
 print("EOC (total):", eocs)
+
+assert abs(eocs[-1] - order - 1) < 1e-1
+assert errors[-1] < 5e-3

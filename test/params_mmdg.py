@@ -9,7 +9,7 @@ from mmdgpy.problems.mmdgproblem4 import MMDGProblem4
 from mmdgpy.problems.mmdgproblem5 import MMDGProblem5
 
 ################################################################################
-###  parameter file for main_mmdg.py  ##########################################
+###  parameter file for test_mmdg.py  ##########################################
 ################################################################################
 
 dim = 2

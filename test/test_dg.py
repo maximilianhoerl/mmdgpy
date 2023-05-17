@@ -38,3 +38,6 @@ for i in range(len(n_values)):
 
 print("errors:", errors)
 print("EOC:", eocs)
+
+assert abs(eocs[-1] - order - 1) < 1e-1
+assert errors[-1] < 1e-5
