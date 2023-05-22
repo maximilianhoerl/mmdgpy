@@ -8,36 +8,47 @@ from mmdgpy.grids.grids import create_dgf_grid
 
 ################################################################################
 
-if not exists(grid_dir):
-    mkdir(grid_dir)
+def main_dg():
+    if not exists(grid_dir):
+        mkdir(grid_dir)
 
-if not exists(vtk_dir):
-    mkdir(vtk_dir)
+    if not exists(vtk_dir):
+        mkdir(vtk_dir)
 
-errors = []
-eocs = []
+    errors = []
+    eocs = []
 
-for i in range(len(n_values)):
-    print(i)
-    start_time = time()
+    for i in range(len(n_values)):
+        print(i)
+        start_time = time()
 
-    create_dgf_grid(gridfile, n_values[i], dim)
+        create_dgf_grid(gridfile, n_values[i], dim)
 
-    dg = DG(dim, order, gridfile, problem, mu0, contortion, trafo, storage)
-    dg.solve(solver)
-    dg.write_vtk(vtkfile, i)
+        dg = DG(dim, order, gridfile, problem, mu0, contortion, trafo, storage)
+        dg.solve(solver)
+        dg.write_vtk(vtkfile, i)
 
-    errors += [dg.get_error(order=10)]
+        errors += [dg.get_error(order=10)]
 
-    if i > 0:
-        eocs += [ np.log( errors[i-1] / errors[i] ) \
-         / np.log( n_values[i] / n_values[i-1] ) ]
+        if i > 0:
+            eocs += [ np.log( errors[i-1] / errors[i] ) \
+             / np.log( n_values[i] / n_values[i-1] ) ]
 
-    print("Finished with a total run time of {0:.2f} Seconds.\n".format( \
-     time() - start_time))
+        print("Finished with a total run time of {0:.2f} Seconds.\n".format( \
+         time() - start_time))
 
-print("errors:", errors)
-print("EOC:", eocs)
+    print("errors:", errors)
+    print("EOC:", eocs)
 
-assert abs(eocs[-1] - order - 1) < 1e-1
-assert errors[-1] < 1e-5
+    return errors, eocs
+
+################################################################################
+
+# run test with pytest
+def test_dg():
+    errors, eocs = main_dg()
+    assert abs(eocs[-1] - order - 1) < 1e-1
+    assert errors[-1] < 1e-5
+
+# run test as script
+main_dg()
