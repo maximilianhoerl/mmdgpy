@@ -2,7 +2,7 @@ import numpy as np
 from time import time
 from os import mkdir
 from os.path import exists
-from mmdgpy.test.params_mmdg import *
+from params_mmdg import *
 from ufl import *
 from dune.ufl import Constant
 from mmdgpy.dg.mmdg2 import MMDG2
