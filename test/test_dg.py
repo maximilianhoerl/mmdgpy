@@ -2,7 +2,7 @@ import numpy as np
 from time import time
 from os import mkdir
 from os.path import exists
-from params_dg import *
+from mmdgpy.test.params_dg import *
 from mmdgpy.dg.dg import DG
 from mmdgpy.grids.grids import create_dgf_grid
 
