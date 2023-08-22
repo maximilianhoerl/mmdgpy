@@ -35,10 +35,10 @@ Given a grid file and a problem object, a dG scheme is created as an instance of
 
 ## Scripts
 
-The `main` directory contains a few useful scripts that demonstrate how to use `mmdgpy` and can be used for testing purposes.
+The directories `main` and `test` contain a few useful scripts that demonstrate how to use `mmdgpy` and can be used for testing purposes.
 
-- `main_dg.py`: Tests the full-dimensional `DG` scheme under grid refinement with corresponding parameter file `params_dg.py`.
-- `main_mmdg.py`: Tests the mixed-dimensional scheme `MMDG1` or `MMDG2` under grid refinement with corresponding parameter file `params_mmdg.py`.
+- `test_dg.py`: Tests the full-dimensional `DG` scheme under grid refinement with corresponding parameter file `params_dg.py`.
+- `test_mmdg.py`: Tests the mixed-dimensional scheme `MMDG1` or `MMDG2` under grid refinement with corresponding parameter file `params_mmdg.py`.
 - `main_comparison.py`: Solves the same flow problem with fracture using the different reduced schemes and calculates a full-dimensional reference solution. The corresponding parameter file is `params_comparison.py`.
 - `main_roughness.py`: Solves a flow problem with random Gaussian fracture using different reduced schemes and calculates a full-dimensional reference solution. The corresponding parameter file is `params_roughness.py`.
 - `plot_comparison.py`: Visualizes the simulation results obtained with the script `main_comparison.py` or `main_roughness.py`. To be executed with `pvpython` (`ParaView` version 5.10.1).
@@ -56,8 +56,8 @@ make html
 
 <a id="2">[2]</a>  S. Burbulla, A. Dedner, M. Hörl, and C. Rohde. *"Dune-MMesh: The Dune Grid Module for Moving Interfaces."* In: J. Open Source Softw. 7 (74) (2022), 3959.
 
-<a id="3">[3]</a>  S. Burbulla, M. Hörl, and C. Rohde. *"Flow in Porous Media with Fractures of Varying Aperture."* In preparation, 2022.
+<a id="3">[3]</a>  S. Burbulla, M. Hörl, and C. Rohde. *"Flow in Porous Media with Fractures of Varying Aperture."* In: SIAM J. Sci. Comput. 45(4) (2023).
 
 <a id="4">[4]</a>  A. Dedner et al. *"A generic interface for parallel and adaptive discretization schemes: abstraction principles and the DUNE-FEM module."* In: Comput. 90 (2010), pp. 165-196.
 
-<a id="5">[5]</a> M. Hörl. *"Flow in Porous Media with Fractures of Varying Aperture."* Master's Thesis. University of Stuttgart, 2022.
+<a id="5">[5]</a>  M. Hörl. *"Flow in Porous Media with Fractures of Varying Aperture."* Master's Thesis. University of Stuttgart, 2022.
