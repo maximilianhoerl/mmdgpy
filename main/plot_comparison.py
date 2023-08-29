@@ -3,9 +3,8 @@ from os import remove, mkdir
 from os.path import join, exists
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import vtk as vtk
-from vtk.util.numpy_support import vtk_to_numpy
+from pandas import read_csv
+from paraview import numpy_support as ns
 from matplotlib.tri import Triangulation
 from matplotlib.colors import Normalize
 from scipy.interpolate import griddata, interp1d
@@ -60,7 +59,7 @@ marker_styles = ['x', 'o', '+', 'd', 'p', '8', '*']
 
 ################################################################################
 
-def get_point_data(reader, value):
+def get_point_data(reader_data, value):
     index = -1
     sp = value.split(':')
     if len(sp) == 2:
@@ -68,7 +67,7 @@ def get_point_data(reader, value):
         index = int(sp[1])
 
     point_scalar_idx = -1
-    pd = reader.GetOutput().GetPointData()
+    pd = reader_data.GetPointData()
     for i in range(pd.GetNumberOfArrays()):
         if(value == pd.GetArrayName(i)):
             point_scalar_idx = i
@@ -78,8 +77,8 @@ def get_point_data(reader, value):
         return None
     else:
         point_scalar_vtk_array = \
-         reader.GetOutput().GetPointData().GetArray(point_scalar_idx)
-        pscalar_array = vtk_to_numpy(point_scalar_vtk_array)
+         reader_data.GetPointData().GetArray(point_scalar_idx)
+        pscalar_array = ns.vtk_to_numpy(point_scalar_vtk_array)
 
     if index != -1:
         return pscalar_array[:, index]
@@ -87,16 +86,16 @@ def get_point_data(reader, value):
         return pscalar_array
 
 
-def get_triangulation(reader, fulldim=True):
-    nodes_vtk_array = reader.GetOutput().GetPoints().GetData()
-    nodes_numpy_array = vtk_to_numpy(nodes_vtk_array)
+def get_triangulation(reader_data, fulldim=True):
+    nodes_vtk_array = reader_data.GetPoints().GetData()
+    nodes_numpy_array = ns.vtk_to_numpy(nodes_vtk_array)
     x, y, z = \
      nodes_numpy_array[:, 0], nodes_numpy_array[:, 1], nodes_numpy_array[:, 2]
 
-    tri_vtk_array = reader.GetOutput().GetCells().GetData()
-    triangles = vtk_to_numpy(tri_vtk_array)
+    tri_vtk_array = reader_data.GetCells().GetData()
+    triangles = ns.vtk_to_numpy(tri_vtk_array)
 
-    ntri = reader.GetOutput().GetNumberOfCells()
+    ntri = reader_data.GetNumberOfCells()
     ia = np.zeros(ntri)
     ib = np.zeros(ntri)
     ic = np.zeros(ntri)
@@ -245,17 +244,17 @@ for k in range(len(d0_values)):
         ########################################################################
         # plot full-dimensional reference solution
 
-        reader = vtk.vtkXMLUnstructuredGridReader()
-        reader.SetFileName(vtk_file)
-        reader.Update()
+        reader = XMLUnstructuredGridReader(FileName=vtk_file)
+        SetActiveSource(reader)
+        reader_data = paraview.servermanager.Fetch(reader)
 
         fig_p, ax_p = plt.subplots()
         fig_u, ax_u = plt.subplots()
 
-        p_data = get_point_data(reader, 'p')
-        u_data = get_point_data(reader, 'u')
+        p_data = get_point_data(reader_data, 'p')
+        u_data = get_point_data(reader_data, 'u')
 
-        x_tri, y_tri, z_tri, triangles = get_triangulation(reader)
+        x_tri, y_tri, z_tri, triangles = get_triangulation(reader_data)
         triangulation = Triangulation(x=x_tri, y=y_tri, triangles=triangles)
 
         v = np.linspace(0., 1., 100)
@@ -318,7 +317,7 @@ for k in range(len(d0_values)):
             SaveData(csv_file, plot_over_line, Precision=15,
              FieldAssociation='Point Data')
 
-            csv_reader = pd.read_csv(csv_file)
+            csv_reader = read_csv(csv_file)
             y = csv_reader['Points:1'].values
             p_gamma = csv_reader['p_Gamma'].values
 
@@ -353,15 +352,15 @@ for k in range(len(d0_values)):
         triangulation = []
 
         for i in range(len(vtp_files)):
-            reader = vtk.vtkXMLUnstructuredGridReader()
-            reader.SetFileName(join(vtk_dir, vtp_files[i] + '.vtu'))
-            reader.Update()
+            reader = XMLUnstructuredGridReader(\
+             FileName=join(vtk_dir, vtp_files[i] + '.vtu'))
+            SetActiveSource(reader)
+            reader_data = paraview.servermanager.Fetch(reader)
 
-            x_tri, y_tri, z_tri, triangles = get_triangulation(reader)
+            x_tri, y_tri, z_tri, triangles = get_triangulation(reader_data)
             triangulation += \
              [ Triangulation(x=y_tri, y=z_tri, triangles=triangles) ]
-
-            p_gamma_data += [ get_point_data(reader, 'p_Gamma') ]
+            p_gamma_data += [ get_point_data(reader_data, 'p_Gamma') ]
             p_gamma = griddata(
              (y_tri, z_tri), p_gamma_data[i], (ydata, zdata), method='cubic')
 
