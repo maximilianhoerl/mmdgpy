@@ -96,3 +96,25 @@ class MMDG1(MMDG2):
                 self.b_gamma += self.phi_gamma * trm \
                  * dot(grad(problem.d_i(self.x_gamma, -inormal)), self.n_gamma)\
                  * self.problem.boundary_dn_gamma(self.x_gamma) * ds
+
+
+    def _init_vtk_pointdata(self, detailed=False):
+        """ Initialize data for output by write_vtk().
+
+            :param bool detailed: A boolean that indicates whether to export
+                more data (e.g., the domain marker). Defaults to False.
+        """
+        super()._init_vtk_pointdata(detailed)
+
+        if detailed:
+            inormal = normals(self.igridview)
+
+            u_gamma_y = \
+             -self.problem.k_gamma(self.x_gamma) / self.problem.d(self.x_gamma)\
+             * ( grad(self.problem.d(self.x_gamma) * self.ph_gamma) \
+             - trace(self.ph, self.igridview)('+') \
+             * grad(self.problem.d_i(self.x_gamma, inormal)) \
+             - trace(self.ph, self.igridview)('-') \
+             * grad(self.problem.d_i(self.x_gamma, -inormal)) )
+
+            self.ipointdata.update({"u_Gamma_y": u_gamma_y})

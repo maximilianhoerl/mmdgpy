@@ -150,15 +150,21 @@ class DG:
         scheme.solve(target=self.ph)
 
 
-    def write_vtk(self, filename="pressure", filenumber=0):
+    def write_vtk(self, filename="pressure", filenumber=0, detailed=False):
         """ Writes out the solution to VTk. Remember to call solve() first.
 
             :param str filename: A filename. Defaults to 'pressure'.
             :param int filenumber: A file number if a series of problems is
                 solved. Defaults to 0.
+            :param bool detailed: A boolean that indicates whether to export
+                more data to the vtk file (e.g., the domain marker). Defaults
+                to False.
         """
-        uh = -self.problem.k(self.x, self.dm) * grad(self.ph)
-        pointdata = {"p": self.ph, "u": uh}
+        pointdata = {"p": self.ph}
+
+        if detailed:
+            uh = -self.problem.k(self.x, self.dm) * grad(self.ph)
+            pointdata.update({"u": uh, "dm": self.dm})
 
         try:
             p_exact = self.problem.p(self.x, self.dm)

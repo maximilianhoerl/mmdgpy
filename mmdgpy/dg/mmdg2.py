@@ -207,31 +207,21 @@ class MMDG2(DG):
             raise ValueError('Unknown solver: ' + solver)
 
 
-    def write_vtk(self, filename="pressure", filenumber=0):
-        """ Writes out the solution to VTk. Remember to call solve() first.
+    def write_vtk(self, filename="pressure", filenumber=0, detailed=False):
+        """ Writes out the solution to VTK. Remember to call solve() first.
 
             :param str filename: A filename. Defaults to 'pressure'.
             :param int filenumber: A file number if a series of problems is
                 solved. Defaults to 0.
+            :param bool detailed: A boolean that indicates whether to export
+                more data to the vtk file (e.g., the domain marker). Defaults
+                to False.
         """
-        super().write_vtk(filename, filenumber)
-
-        pointdata = {"p_Gamma": self.ph_gamma,
-         "d1": self.problem.d1(self.x_gamma),
-         "d2": self.problem.d2(self.x_gamma),
-         "d": self.problem.d(self.x_gamma),
-         "grad_d1": self.problem.grad_d1(self.x_gamma),
-         "grad_d2": self.problem.grad_d2(self.x_gamma)}
-
-        try:
-            pointdata.update(\
-             {"exact_gamma": self.problem.p_gamma(self.x_gamma), \
-             "error_gamma": self.ph_gamma - self.problem.p_gamma(self.x_gamma)})
-        except:
-            pass
+        super().write_vtk(filename, filenumber, detailed)
+        self._init_vtk_pointdata(detailed)
 
         self.igridview.writeVTK(filename + "Gamma" + str(filenumber), \
-         pointdata=pointdata, nonconforming=True, \
+         pointdata=self.ipointdata, nonconforming=True, \
          subsampling=self.ispace.order-1)
 
 
@@ -249,3 +239,35 @@ class MMDG2(DG):
         error_gamma = sqrt(error_gamma)
 
         return error_bulk, error_gamma, error_total
+
+
+    def _init_vtk_pointdata(self, detailed=False):
+        """ Initialize data for output by write_vtk().
+
+            :param bool detailed: A boolean that indicates whether to export
+                more data (e.g., the domain marker). Defaults to False.
+        """
+        self.ipointdata = {"p_Gamma": self.ph_gamma}
+
+        if detailed:
+            u_gamma_x = self.problem.k_gamma_perp(self.x_gamma) / \
+             self.problem.d(self.x_gamma) \
+             * jump(trace(self.ph, self.igridview))
+            u_gamma_y = \
+             -self.problem.k_gamma(self.x_gamma) / self.problem.d(self.x_gamma)\
+             * grad(self.problem.d(self.x_gamma) * self.ph_gamma)
+
+            self.ipointdata.update({"d1": self.problem.d1(self.x_gamma),
+            "d2": self.problem.d2(self.x_gamma),
+            "d": self.problem.d(self.x_gamma),
+            "grad_d1": self.problem.grad_d1(self.x_gamma),
+            "grad_d2": self.problem.grad_d2(self.x_gamma),
+            "u_Gamma_x": u_gamma_x,
+            "u_Gamma_y": u_gamma_y})
+
+        try:
+            self.ipointdata.update(\
+             {"exact_gamma": self.problem.p_gamma(self.x_gamma), \
+             "error_gamma": self.ph_gamma - self.problem.p_gamma(self.x_gamma)})
+        except:
+            pass
