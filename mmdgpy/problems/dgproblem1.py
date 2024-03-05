@@ -11,7 +11,7 @@ class DGProblem1(DGProblem):
             :param x: The spatial coordinate.
             :param dm: A domain marker.
         """
-        return dot(x,x)
+        return sin(2. * pi * x[0]) * cos(2. * pi * x[1])
 
 
     def q(self, x, dm):
@@ -20,8 +20,7 @@ class DGProblem1(DGProblem):
             :param x: The spatial coordinate.
             :param dm: A domain marker.
         """
-        dim = x.ufl_shape[0]
-        return -2 * ( 3 * dot(x,x) + dim )
+        return -div( self.k(x,dm) * grad(self.p(x,dm)) )
 
 
     def gd(self, x, dm):
@@ -40,7 +39,7 @@ class DGProblem1(DGProblem):
             :param x: The spatial coordinate.
             :param dm: A domain marker.
         """
-        return 2. * x[1] * ( 1. + x[1] * x[1] )
+        return 2. * pi * ( 1. + x[1] * x[1] ) * sin(2. * pi * x[1])
 
 
     def boundary_dn(self, x, dm):
