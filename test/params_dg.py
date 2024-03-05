@@ -10,9 +10,10 @@ from os.path import join
 
 dim = 2
 order = 1
-mu0 = 1000
+mu0 = 10
 contortion = False
 trafo = None
+detailed_vtk = False
 
 # series of number of grid elements per directions
 n_values = np.unique( \

@@ -250,12 +250,22 @@ class MMDG2(DG):
         self.ipointdata = {"p_Gamma": self.ph_gamma}
 
         if detailed:
+            p_interpol = self.space.interpolate(\
+             self.problem.p(self.x, self.dm), name='p_tmp')
+
             u_gamma_x = self.problem.k_gamma_perp(self.x_gamma) / \
              self.problem.d(self.x_gamma) \
              * jump(trace(self.ph, self.igridview))
             u_gamma_y = \
              -self.problem.k_gamma(self.x_gamma) / self.problem.d(self.x_gamma)\
              * grad(self.problem.d(self.x_gamma) * self.ph_gamma)
+            u_gamma_x_exact = self.problem.k_gamma_perp(self.x_gamma) / \
+             self.problem.d(self.x_gamma) \
+             * jump(trace(p_interpol, self.igridview))
+            u_gamma_y_exact = \
+             -self.problem.k_gamma(self.x_gamma) / self.problem.d(self.x_gamma)\
+             * grad(self.problem.d(self.x_gamma) \
+             * self.problem.p_gamma(self.x_gamma))
 
             self.ipointdata.update({"d1": self.problem.d1(self.x_gamma),
             "d2": self.problem.d2(self.x_gamma),
@@ -263,11 +273,16 @@ class MMDG2(DG):
             "grad_d1": self.problem.grad_d1(self.x_gamma),
             "grad_d2": self.problem.grad_d2(self.x_gamma),
             "u_Gamma_x": u_gamma_x,
-            "u_Gamma_y": u_gamma_y})
+            "u_Gamma_y": u_gamma_y,
+            "u_gamma_x_exact": u_gamma_x_exact,
+            "u_Gamma_y_exact": u_gamma_y_exact,
+            "u_Gamma_x_error": u_gamma_x - u_gamma_x_exact,
+            "u_Gamma_y_error": u_gamma_y - u_gamma_y_exact})
 
         try:
             self.ipointdata.update(\
-             {"exact_gamma": self.problem.p_gamma(self.x_gamma), \
-             "error_gamma": self.ph_gamma - self.problem.p_gamma(self.x_gamma)})
+             {"p_exact_gamma": self.problem.p_gamma(self.x_gamma), \
+             "p_error_gamma": \
+              self.ph_gamma - self.problem.p_gamma(self.x_gamma)})
         except:
             pass

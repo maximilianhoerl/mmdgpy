@@ -108,6 +108,8 @@ class MMDG1(MMDG2):
 
         if detailed:
             inormal = normals(self.igridview)
+            p_interpol = self.space.interpolate(\
+             self.problem.p(self.x, self.dm), name='p_tmp')
 
             u_gamma_y = \
              -self.problem.k_gamma(self.x_gamma) / self.problem.d(self.x_gamma)\
@@ -116,5 +118,15 @@ class MMDG1(MMDG2):
              * grad(self.problem.d_i(self.x_gamma, inormal)) \
              - trace(self.ph, self.igridview)('-') \
              * grad(self.problem.d_i(self.x_gamma, -inormal)) )
+            u_gamma_y_exact = \
+             -self.problem.k_gamma(self.x_gamma) / self.problem.d(self.x_gamma)\
+             * ( grad(self.problem.d(self.x_gamma) \
+             * self.problem.p_gamma(self.x_gamma)) \
+             - trace(p_interpol, self.igridview)('+') \
+             * grad(self.problem.d_i(self.x_gamma, inormal)) \
+             - trace(p_interpol, self.igridview)('-') \
+             * grad(self.problem.d_i(self.x_gamma, -inormal)) )
 
-            self.ipointdata.update({"u_Gamma_y": u_gamma_y})
+            self.ipointdata.update({"u_Gamma_y": u_gamma_y,
+             "u_Gamma_y_exact": u_gamma_y_exact,
+             "u_Gamma_y_error": u_gamma_y - u_gamma_y_exact})

@@ -34,7 +34,7 @@ def main_mmdg():
             mmdg = MMDG2(dim, order, gridfile, problem, mu0, xi, contortion)
 
         mmdg.solve(solver, iter, tol, f_tol, eps, accelerate, verbose)
-        mmdg.write_vtk(vtkfile, i)
+        mmdg.write_vtk(vtkfile, i, detailed=detailed_vtk)
 
         err_bulk, err_gamma, err_total = mmdg.get_error(order)
         errors_bulk += [err_bulk]

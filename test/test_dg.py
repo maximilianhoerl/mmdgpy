@@ -16,7 +16,9 @@ def main_dg():
         mkdir(vtk_dir)
 
     errors = []
+    errors_v = []
     eocs = []
+    eocs_v = []
 
     for i in range(len(n_values)):
         print(i)
@@ -26,19 +28,24 @@ def main_dg():
 
         dg = DG(dim, order, gridfile, problem, mu0, contortion, trafo, storage)
         dg.solve(solver)
-        dg.write_vtk(vtkfile, i)
+        dg.write_vtk(vtkfile, i, detailed=detailed_vtk)
 
         errors += [dg.get_error(order=10)]
+        errors_v += [dg.get_error_velocity(order=10)]
 
         if i > 0:
             eocs += [ np.log( errors[i-1] / errors[i] ) \
+             / np.log( n_values[i] / n_values[i-1] ) ]
+            eocs_v += [ np.log( errors_v[i-1] / errors_v[i] ) \
              / np.log( n_values[i] / n_values[i-1] ) ]
 
         print("Finished with a total run time of {0:.2f} Seconds.\n".format( \
          time() - start_time))
 
-    print("errors:", errors)
-    print("EOC:", eocs)
+    print("errors (pressure):", errors)
+    print("EOC (pressure):", eocs)
+    print("errors (velocity)", errors_v)
+    print("EOC (velocity)", eocs_v)
 
     return errors, eocs
 

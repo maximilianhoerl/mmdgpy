@@ -189,3 +189,17 @@ class DG:
         """
         return sqrt(integrate(self.omega, \
          (self.ph - self.problem.p(self.x, self.dm)) ** 2, order=order))
+
+
+    def get_error_velocity(self, order):
+        """ Returns the L2-error of the velocity solution. Requires that an
+            exact solution is implemented for the given problem.
+
+            :param int order: The order of integration.
+        """
+        u_exact = -self.problem.k(self.x, self.dm) \
+         * grad(self.problem.p(self.x, self.dm))
+        uh = -self.problem.k(self.x, self.dm) * grad(self.ph)
+
+        return sqrt(integrate(self.omega, \
+         dot(uh - u_exact, uh - u_exact), order=order))
