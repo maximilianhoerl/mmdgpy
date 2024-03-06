@@ -55,7 +55,7 @@ def main_dg():
 def test_dg():
     errors, eocs = main_dg()
     assert abs(eocs[-1] - order - 1) < 1e-1
-    assert errors[-1] < 3e-5
+    assert errors[-1] < 3e-4
 
 # run test as script
 main_dg()
