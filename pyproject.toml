@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools >= 64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mmdgpy"
+version = "1.0"
+dependencies = ["dune-mmesh==1.4.1", "matplotlib", "scipy", "sphinx"]
+requires-python = ">=3.7"
+authors = [
+  {name = "Maximilian Hörl", email = "maximilian.hoerl@mathematik.uni-stuttgart.de"}
+]
+maintainers = [
+  {name = "Maximilian Hörl", email = "maximilian.hoerl@mathematik.uni-stuttgart.de"}
+]
+readme = "README.md"
+license = {file = "LICENSE.md"}
+
+[project.urls]
+Repository = "https://https://github.com/maximilianhoerl/mmdgpy"
