@@ -136,13 +136,13 @@ class DG:
                 solver = "minres"
             scheme = galerkin([self.b_bulk == self.l_bulk],
              solver=solver,
-             parameters={"newton.verbose": "true",
-              "newton.linear.preconditioning.method": "ilu"})
+             parameters={"linear.verbose": "true",
+              "linear.preconditioning.method": "ilu"})
 
         elif self.storage == None and solver in [None, "umfpack"]:
             scheme = galerkin([self.b_bulk == self.l_bulk], \
              solver=("suitesparse","umfpack"), \
-             parameters={"newton.verbose": "true"})
+             parameters={"linear.verbose": "true"})
 
         else:
             raise ValueError("Invalid solver or storage type!")
