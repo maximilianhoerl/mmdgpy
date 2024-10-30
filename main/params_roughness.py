@@ -7,7 +7,7 @@ from dune.ufl import Constant
 
 dim = 2     # dimension
 order = 1   # order of dG space
-mu0 = 1000  # penalty parameter
+mu0 = 10  # penalty parameter
 xi = 2./3.  # coupling parameter
 
 # parameters for solver of full-dimensional scheme

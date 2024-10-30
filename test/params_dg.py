@@ -10,7 +10,7 @@ from os.path import join
 
 dim = 2
 order = 1
-mu0 = 1000
+mu0 = 10
 contortion = False
 trafo = None
 

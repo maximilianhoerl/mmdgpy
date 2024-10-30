@@ -14,7 +14,7 @@ from mmdgpy.problems.mmdgproblem5 import MMDGProblem5
 
 dim = 2
 order = 1
-mu0 = 1000
+mu0 = 10
 xi = 2./3.
 
 use_mmdg1 = True
