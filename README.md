@@ -12,6 +12,8 @@ For details, we refer to [3,5].
 
 ## Installation
 
+### Installation with Pip
+
 1. Create and activate a virtual environment (recommended).
 ````
 python3 -m venv dune-env
@@ -21,6 +23,55 @@ source dune-env/bin/activate
 2. Clone the repository and install `mmdgpy` and its dependencies using `pip`.
 ````
 git clone https://github.com/maximilianhoerl/mmdgpy.git
+pip install -e mmdgpy
+````
+
+<hr/>
+
+### Installation from Source 
+
+1. Clone the `DUNE` and `mmdgpy` repositories.
+````
+git clone https://gitlab.dune-project.org/core/dune-common.git
+git clone https://gitlab.dune-project.org/core/dune-geometry.git
+git clone https://gitlab.dune-project.org/core/dune-grid.git
+git clone https://gitlab.dune-project.org/core/dune-istl.git
+git clone https://gitlab.dune-project.org/core/dune-localfunctions.git
+git clone https://gitlab.dune-project.org/extensions/dune-alugrid.git
+git clone https://gitlab.dune-project.org/dune-fem/dune-fem.git
+git clone https://gitlab.dune-project.org/samuel.burbulla/dune-mmesh.git
+git clone https://github.com/maximilianhoerl/mmdgpy.git
+````
+
+2. Build the `DUNE` modules.
+````
+./dune-common/bin/dunecontrol --opts=dune-mmesh/cmake/config.opts all
+````
+
+3. Activate the `DUNE` virtual environment and install `mmdgpy`.
+````
+source ./dune-common/build-cmake/dune-env/bin/activate
+pip install -e mmdgpy
+````
+
+<hr/>
+
+### Installation with Docker
+
+1. Start the `DUNE-MMesh` Docker container.
+````
+docker run -it ghcr.io/samuelburbulla/dune-mmesh:master
+````
+
+2. Clone the `mmdgpy` repository.
+````
+cd ../../..
+git clone https://github.com/maximilianhoerl/mmdgpy.git
+````
+
+3. Activate the `DUNE` virtual environment and install `mmdgpy` inside the Docker container.
+````
+source venv/bin/activate
 pip install -e mmdgpy
 ````
 
