@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup( name = 'mmdgpy',
-       version = 1.0,
+       version = 1.1,
        author = 'Maximilian Hörl',
        author_email = 'maximilian.hoerl@mathematik.uni-stuttgart.de',
        url = 'https://gitlab.mathematik.uni-stuttgart.de/hoerlmn/mmdgpy',

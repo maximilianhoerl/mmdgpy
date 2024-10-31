@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mmdgpy"
-version = "1.0"
+version = "1.1"
 dependencies = ["dune-mmesh>=1.4", "matplotlib", "scipy", "sphinx", "mpi4py"]
 requires-python = ">=3.7"
 authors = [
