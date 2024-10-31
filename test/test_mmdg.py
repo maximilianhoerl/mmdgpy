@@ -11,6 +11,7 @@ from mmdgpy.grids.grids import create_reduced_grid
 
 ################################################################################
 
+
 def main_mmdg():
     if not exists(grid_dir):
         mkdir(grid_dir)
@@ -26,7 +27,7 @@ def main_mmdg():
         print(i)
         start_time = time()
 
-        create_reduced_grid(gridfile, h=0.5*2**-i, hf=0.5*2**-i, dim=dim)
+        create_reduced_grid(gridfile, h=0.5 * 2**-i, hf=0.5 * 2**-i, dim=dim)
 
         if use_mmdg1:
             mmdg = MMDG1(dim, order, gridfile, problem, mu0, xi, contortion)
@@ -42,14 +43,15 @@ def main_mmdg():
         errors += [err_total]
 
         if i > i0:
-            eocs_bulk += \
-             [ np.log( errors_bulk[i-1] / errors_bulk[i] ) / np.log(2) ]
-            eocs_gamma += \
-             [ np.log( errors_gamma[i-1] / errors_gamma[i] ) / np.log(2) ]
-            eocs += [ np.log( errors[i-1] / errors[i] ) / np.log(2) ]
+            eocs_bulk += [np.log(errors_bulk[i - 1] / errors_bulk[i]) / np.log(2)]
+            eocs_gamma += [np.log(errors_gamma[i - 1] / errors_gamma[i]) / np.log(2)]
+            eocs += [np.log(errors[i - 1] / errors[i]) / np.log(2)]
 
-        print("\nFinished with a total run time of {0:.2f} Seconds.\n".format( \
-         time() - start_time))
+        print(
+            "\nFinished with a total run time of {0:.2f} Seconds.\n".format(
+                time() - start_time
+            )
+        )
 
     print("errors (bulk):", errors_bulk)
     print("EOC (bulk):", eocs_bulk)
@@ -60,13 +62,16 @@ def main_mmdg():
 
     return errors, eocs
 
+
 ################################################################################
+
 
 # run test with pytest
 def test_mmdg():
     errors, eocs = main_mmdg()
     assert abs(eocs[-1] - order - 1) < 1e-1
     assert errors[-1] < 5e-3
+
 
 # run test as script
 main_mmdg()

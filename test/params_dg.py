@@ -15,8 +15,9 @@ contortion = False
 trafo = None
 
 # series of number of grid elements per directions
-n_values = np.unique( \
- ( np.logspace(0, 2.2, 8) if dim==2 else np.logspace(0, 1, 5) ).astype(int) )
+n_values = np.unique(
+    (np.logspace(0, 2.2, 8) if dim == 2 else np.logspace(0, 1, 5)).astype(int)
+)
 
 # problem parameters
 d_mean = 5e-3
@@ -30,7 +31,7 @@ storage = None
 solver = None
 
 # directories and file names
-grid_dir = 'grids'
-vtk_dir = 'vtk'
-gridfile = join(grid_dir, 'cube.dgf')
-vtkfile = join(vtk_dir, 'pressure')
+grid_dir = "grids"
+vtk_dir = "vtk"
+gridfile = join(grid_dir, "cube.dgf")
+vtkfile = join(vtk_dir, "pressure")
