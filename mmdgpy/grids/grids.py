@@ -69,8 +69,8 @@ def create_reduced_grid(file, h, hf, dim):
     l6 = geo.addLine(p6, p1, 6)
     lf1 = geo.addLine(p2, p5, 31)
 
-    geo.addCurveLoop([1, 31, 5, 6], 1)
-    geo.addCurveLoop([2, 3, 4, -31], 2)
+    geo.addCurveLoop([l1, lf1, l5, l6], 1)
+    geo.addCurveLoop([l2, l3, l4, -lf1], 2)
 
     geo.addPlaneSurface([1], 0)
     geo.addPlaneSurface([2], 1)
@@ -97,15 +97,15 @@ def create_reduced_grid(file, h, hf, dim):
         lf3 = geo.addLine(p15, p12, 33)
         lf4 = geo.addLine(p12, p2, 34)
 
-        geo.addCurveLoop([11, -33, 15, 16], 3)
-        geo.addCurveLoop([12, 13, 14, 33], 4)
-        geo.addCurveLoop([1, -34, -11, -21], 5)
-        geo.addCurveLoop([2, 22, -12, 34], 6)
-        geo.addCurveLoop([-5, 32, 15, -24], 7)
-        geo.addCurveLoop([-4, 23, 14, -32], 8)
-        geo.addCurveLoop([6, 21, -16, -24], 9)
-        geo.addCurveLoop([-3, 22, 13, -23], 10)
-        geo.addCurveLoop([31, 32, 33, 34], 11)
+        geo.addCurveLoop([l11, -lf3, l15, l16], 3)
+        geo.addCurveLoop([l12, l13, l14, lf3], 4)
+        geo.addCurveLoop([l1, -lf4, -l11, -l21], 5)
+        geo.addCurveLoop([l2, l22, -l12, lf4], 6)
+        geo.addCurveLoop([-l5, lf2, l15, -l24], 7)
+        geo.addCurveLoop([-l4, l23, l14, -lf2], 8)
+        geo.addCurveLoop([l6, l21, -l16, -l24], 9)
+        geo.addCurveLoop([-l3, l22, l13, -l23], 10)
+        geo.addCurveLoop([lf1, lf2, lf3, lf4], 11)
 
         for i in range(2, 11):
             geo.addPlaneSurface([i + 1], i)
@@ -168,14 +168,14 @@ def create_resolved_grid(file, d1, d2, h, hf, dim):
                 geo.addPoint(0.5 + d2([0.5, pos[i], 0]), pos[i], 0, hf, 100 + 2 * i + 1)
             )
 
-        outline_left = geo.addLine(bottomleft, topleft, 1)
-        outline_right = geo.addLine(bottomright, topright, 2)
-        outline_bottomleft = geo.addLine(bottomleft, points_gamma1[0], 3)
-        outline_bottommid = geo.addLine(points_gamma1[0], points_gamma2[0], 4)
-        outline_bottomright = geo.addLine(points_gamma2[0], bottomright, 5)
-        outline_topleft = geo.addLine(topleft, points_gamma1[-1], 6)
-        outline_topmid = geo.addLine(points_gamma1[-1], points_gamma2[-1], 7)
-        outline_topright = geo.addLine(points_gamma2[-1], topright, 8)
+        geo.addLine(bottomleft, topleft, 1)  # outline_left
+        geo.addLine(bottomright, topright, 2)  # outline_right
+        geo.addLine(bottomleft, points_gamma1[0], 3)  # outline_bottomleft
+        geo.addLine(points_gamma1[0], points_gamma2[0], 4)  # outline_bottommid
+        geo.addLine(points_gamma2[0], bottomright, 5)  # outline_bottomright
+        geo.addLine(topleft, points_gamma1[-1], 6)  # outline_topleft
+        geo.addLine(points_gamma1[-1], points_gamma2[-1], 7)  # outline_topmid
+        geo.addLine(points_gamma2[-1], topright, 8)  # outline_topright
 
         lines_gamma1 = []
         lines_gamma2 = []

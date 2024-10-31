@@ -1,4 +1,18 @@
-from ufl import *
+from ufl import (
+    SpatialCoordinate,
+    TestFunction,
+    TrialFunction,
+    FacetNormal,
+    dx,
+    dS,
+    jump,
+    avg,
+    ds,
+    sqrt,
+    grad,
+    dot,
+    MaxFacetEdgeLength,
+)
 from dune.ufl import Constant
 from dune.fem.scheme import galerkin
 from dune.mmesh import iterativeSolve, monolithicSolve, skeleton, trace

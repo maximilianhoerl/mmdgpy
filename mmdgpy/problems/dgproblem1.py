@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import as_matrix, dot, conditional
 from mmdgpy.problems.dgproblem import DGProblem
 
 

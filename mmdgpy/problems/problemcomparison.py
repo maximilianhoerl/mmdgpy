@@ -1,5 +1,3 @@
-from ufl import *
-from dune.ufl import Constant
 from mmdgpy.problems.mmdgproblemvertical import MMDGProblemVertical
 
 

@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import as_matrix, conditional, cos, exp, pi
 from dune.ufl import Constant
 from mmdgpy.problems.dgproblem import DGProblem
 

@@ -22,9 +22,14 @@ n_values = np.unique(
 # problem parameters
 d_mean = 5e-3
 d_diff = 2e-3
+problem_number = 1
 
-problem = DGProblem1()
-# problem = DGProblem2(d_mean, d_diff)
+if problem_number == 1:
+    problem = DGProblem1()
+elif problem_number == 2:
+    problem = DGProblem2(d_mean, d_diff)
+else:
+    raise ValueError(f"Invalid problem number {problem_number}")
 
 # parameters for solver
 storage = None

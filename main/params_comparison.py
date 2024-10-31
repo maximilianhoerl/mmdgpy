@@ -1,7 +1,6 @@
 import numpy as np
 from os.path import join
-from ufl import *
-from dune.ufl import Constant
+from ufl import conditional, sin, pi, Identity
 
 ################################################################################
 ###  parameter file for main_comparison.py  ####################################

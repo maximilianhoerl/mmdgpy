@@ -1,5 +1,4 @@
-from ufl import *
-from dune.ufl import Constant
+from ufl import cosh, div, grad, Identity, sinh
 from mmdgpy.problems.mmdgproblemvertical import MMDGProblemVertical
 
 

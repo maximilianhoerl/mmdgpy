@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import as_vector, conditional, dot
 from mmdgpy.problems.mmdgproblem import MMDGProblem
 
 

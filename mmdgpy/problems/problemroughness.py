@@ -1,5 +1,4 @@
-from ufl import *
-from dune.ufl import Constant
+from ufl import grad
 from dune.fem.space import lagrange, finiteVolume
 from mmdgpy.problems.problemcomparison import ProblemComparison
 

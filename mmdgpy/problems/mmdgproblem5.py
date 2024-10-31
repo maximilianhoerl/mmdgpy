@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import as_matrix, cos, exp, pi, sinh
 from dune.ufl import Constant
 from mmdgpy.problems.mmdgproblemvertical import MMDGProblemVertical
 
@@ -100,7 +100,7 @@ class MMDGProblem5(MMDGProblemVertical):
 
         k1, k2 = [], []
         for i in range(dim):
-            row1, row2, rowf = [0] * dim, [0] * dim, [0] * dim
+            row1, row2 = [0] * dim, [0] * dim, [0] * dim
             row1[i] = 1.0 / (1 - self.d(x)) if i > 0 else 1
             row2[i] = 1.0 / (1 + self.d(x)) if i > 0 else 1
             k1 += [row1]

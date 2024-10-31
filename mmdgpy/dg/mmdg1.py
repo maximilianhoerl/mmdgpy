@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import dx, dS, ds, grad, dot, jump
 from ufl.checks import is_globally_constant
 from dune.mmesh import trace, normals
 from mmdgpy.dg.mmdg2 import MMDG2

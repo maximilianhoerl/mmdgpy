@@ -3,8 +3,6 @@ from time import time
 from os import mkdir
 from os.path import exists
 from params_mmdg import *
-from ufl import *
-from dune.ufl import Constant
 from mmdgpy.dg.mmdg2 import MMDG2
 from mmdgpy.dg.mmdg1 import MMDG1
 from mmdgpy.grids.grids import create_reduced_grid

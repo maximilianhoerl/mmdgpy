@@ -1,4 +1,12 @@
-from paraview.simple import *
+from paraview.simple import (
+    XMLUnstructuredGridReader,
+    SetActiveSource,
+    PlotOverLine,
+    IntegrateVariables,
+    XMLPolyDataReader,
+    SaveData,
+)
+from paraview.servermanager import Fetch
 from os import remove, mkdir
 from os.path import join, exists
 import matplotlib.pyplot as plt
@@ -283,7 +291,7 @@ for k in range(len(d0_values)):
 
         reader = XMLUnstructuredGridReader(FileName=vtk_file)
         SetActiveSource(reader)
-        reader_data = paraview.servermanager.Fetch(reader)
+        reader_data = Fetch(reader)
 
         fig_p, ax_p = plt.subplots()
         fig_u, ax_u = plt.subplots()
@@ -404,7 +412,7 @@ for k in range(len(d0_values)):
                 FileName=join(vtk_dir, vtp_files[i] + ".vtu")
             )
             SetActiveSource(reader)
-            reader_data = paraview.servermanager.Fetch(reader)
+            reader_data = Fetch(reader)
 
             x_tri, y_tri, z_tri, triangles = get_triangulation(reader_data)
             triangulation += [Triangulation(x=y_tri, y=z_tri, triangles=triangles)]

@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import as_vector, grad
 from abc import abstractmethod
 from ufl.checks import is_globally_constant
 from mmdgpy.problems.dgproblem import DGProblem

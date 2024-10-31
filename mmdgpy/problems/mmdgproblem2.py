@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import cosh, exp, Identity, sinh, cos, sin, sqrt, tanh
 from dune.ufl import Constant
 from mmdgpy.problems.mmdgproblemvertical import MMDGProblemVertical
 

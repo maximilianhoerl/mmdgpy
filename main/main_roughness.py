@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from time import time
 from os import mkdir
 from os.path import exists
+import numpy as np
 from mmdgpy.dg.dg import DG
 from mmdgpy.dg.mmdg2 import MMDG2
 from mmdgpy.dg.mmdg1 import MMDG1

@@ -1,7 +1,6 @@
 import numpy as np
 from os.path import join
-from ufl import *
-from dune.ufl import Constant
+from ufl import conditional, sqrt, tanh, dot, Identity
 
 ################################################################################
 

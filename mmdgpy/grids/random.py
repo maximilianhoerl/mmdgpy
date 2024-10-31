@@ -1,8 +1,6 @@
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.fft import fft
-from dune.fem.space import lagrange
-from ufl import *
 
 ################################################################################
 
@@ -89,7 +87,7 @@ def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None):
         z1[overlap] += correction
         z2[overlap] += correction
 
-    if file != None:
+    if file is not None:
         np.savez(file, xh=xh, d1=z1, d2=z2)
 
     d1 = interp1d(xh, z1)

@@ -1,11 +1,25 @@
-from ufl import *
+from ufl import (
+    SpatialCoordinate,
+    TrialFunction,
+    TestFunction,
+    FacetNormal,
+    jump,
+    avg,
+    grad,
+    dot,
+    ds,
+    dS,
+    dx,
+    MaxFacetEdgeLength,
+    sqrt,
+)
 from dune.ufl import Constant
 from dune.grid import reader
-from dune.mmesh import mmesh, domainMarker, interfaceIndicator, moveMesh
-from dune.fem import parameter, adapt
-from dune.fem.space import dglagrange, lagrange
+from dune.mmesh import mmesh, domainMarker, interfaceIndicator
+from dune.fem import parameter
+from dune.fem.space import dglagrange
 from dune.fem.scheme import galerkin
-from dune.fem.function import integrate, uflFunction
+from dune.fem.function import integrate
 from dune.fem.view import geometryGridView
 
 
@@ -70,7 +84,7 @@ class DG:
         self.problem.initialize(self.omega)
 
         if contortion:
-            if trafo == None:
+            if trafo is None:
                 trafo = self.problem.trafo
 
             vectorSpace = dglagrange(self.omega, dimRange=dim, order=order + 1)
@@ -172,7 +186,7 @@ class DG:
         parameter.append({"fem.verboserank": 0})
 
         if self.storage == "istl" and solver in [None, "cg", "minres"]:
-            if solver == None:
+            if solver is None:
                 solver = "minres"
             scheme = galerkin(
                 [self.b_bulk == self.l_bulk],
@@ -183,7 +197,7 @@ class DG:
                 },
             )
 
-        elif self.storage == None and solver in [None, "umfpack"]:
+        elif self.storage is None and solver in [None, "umfpack"]:
             scheme = galerkin(
                 [self.b_bulk == self.l_bulk],
                 solver=("suitesparse", "umfpack"),

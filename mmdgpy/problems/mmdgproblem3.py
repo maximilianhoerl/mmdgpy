@@ -1,4 +1,4 @@
-from ufl import *
+from ufl import as_matrix, cosh, div, dot, exp, grad, Identity, sinh
 from dune.ufl import Constant
 from mmdgpy.problems.mmdgproblemvertical import MMDGProblemVertical
 
