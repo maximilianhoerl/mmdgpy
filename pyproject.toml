@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mmdgpy"
 version = "1.0"
-dependencies = ["dune-mmesh==1.4.1", "matplotlib", "scipy", "sphinx"]
+dependencies = ["dune-mmesh>=1.4", "matplotlib", "scipy", "sphinx", "mpi4py"]
 requires-python = ">=3.7"
 authors = [
   {name = "Maximilian Hörl", email = "maximilian.hoerl@mathematik.uni-stuttgart.de"}
