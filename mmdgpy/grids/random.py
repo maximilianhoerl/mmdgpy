@@ -77,8 +77,8 @@ def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None):
     overlap = np.where( (z1 + z2) <= dmin )
 
     if np.size(overlap) != 0:
-        print(f'Warning: Substituting {np.size(overlap)} points with total ' \
-         'aperture below dmin={dmin}.')
+        print(f'Warning: Substituting {np.size(overlap)} points with total '
+              f'aperture below dmin={dmin}.')
         correction = 0.5 * ( dmin - z1[overlap] - z2[overlap] )
         z1[overlap] += correction
         z2[overlap] += correction
