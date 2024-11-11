@@ -8,6 +8,7 @@ from mmdgpy.grids.grids import create_dgf_grid
 
 ################################################################################
 
+
 def main_dg():
     if not exists(grid_dir):
         mkdir(grid_dir)
@@ -31,24 +32,32 @@ def main_dg():
         errors += [dg.get_error(order=10)]
 
         if i > 0:
-            eocs += [ np.log( errors[i-1] / errors[i] ) \
-             / np.log( n_values[i] / n_values[i-1] ) ]
+            eocs += [
+                np.log(errors[i - 1] / errors[i])
+                / np.log(n_values[i] / n_values[i - 1])
+            ]
 
-        print("Finished with a total run time of {0:.2f} Seconds.\n".format( \
-         time() - start_time))
+        print(
+            "Finished with a total run time of {0:.2f} Seconds.\n".format(
+                time() - start_time
+            )
+        )
 
     print("errors:", errors)
     print("EOC:", eocs)
 
     return errors, eocs
 
+
 ################################################################################
+
 
 # run test with pytest
 def test_dg():
     errors, eocs = main_dg()
     assert abs(eocs[-1] - order - 1) < 1e-1
     assert errors[-1] < 1e-5
+
 
 # run test as script
 main_dg()
