@@ -56,7 +56,7 @@ pip install -e mmdgpy
 
 <hr/>
 
-### Installation with Docker
+### Installation inside the `Dune-MMesh` Docker Container
 
 1. Start the `DUNE-MMesh` Docker container.
 ````
@@ -73,6 +73,22 @@ git clone https://github.com/maximilianhoerl/mmdgpy.git
 ````
 source venv/bin/activate
 pip install -e mmdgpy
+````
+
+<hr/>
+
+### Installation inside a new Docker Container
+
+1. Build a Docker image with the provided docker file.
+````
+cd mmdgpy/docker
+docker build -t mmdgpy .
+````
+
+2. Run the Docker container and activate the `DUNE` virtual environment.
+````
+docker run -it mmdgpy
+source ./dune-common/build-cmake/dune-env/bin/activate
 ````
 
 ## Schemes
