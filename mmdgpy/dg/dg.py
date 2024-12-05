@@ -30,6 +30,7 @@ class DG:
     :ivar DGProblem problem: A problem implementing the interface DGProblem.
     :ivar omega: The bulk grid view.
     :ivar space: The bulk dG space.
+    :ivar velocity_space: The bulk velocity dG space.
     :ivar x: The bulk spatial coordinate.
     :ivar dm: A domain marker.
     :ivar chi_gamma: An interface indicator.
@@ -41,6 +42,7 @@ class DG:
     :ivar b_bulk: The bilinear form of bulk contributions.
     :ivar l_bulk: The linear form of bulk contributions.
     :ivar storage: The underlying linear algebra backend.
+    :ivar uh: The bulk velocity numerical solution.
     """
 
     def __init__(
@@ -97,6 +99,9 @@ class DG:
 
         self.storage = storage
         self.space = dglagrange(self.omega, order=order, storage=self.storage)
+        self.velocity_space = dglagrange(
+            self.omega, order=order - 1, dimRange=dim, storage=self.storage
+        )
         self.x = SpatialCoordinate(self.space)
         self.dm = domainMarker(self.omega, wrapped=contortion)
         self.chi_gamma = interfaceIndicator(
@@ -175,7 +180,7 @@ class DG:
                 * ds
             )
 
-    def solve(self, solver=None):
+    def solve(self, solver=None, verbose=True):
         """Solves the discontinuous Galerkin problem.
 
         :param solver: One of the following solvers: 'umfpack' (requires
@@ -201,7 +206,7 @@ class DG:
             scheme = galerkin(
                 [self.b_bulk == self.l_bulk],
                 solver=("suitesparse", "umfpack"),
-                parameters={"linear.verbose": "true"},
+                parameters={"linear.verbose": verbose},
             )
 
         else:
@@ -209,32 +214,36 @@ class DG:
 
         scheme.solve(target=self.ph)
 
-    def write_vtk(self, filename="pressure", filenumber=0):
+        self.uh = self.velocity_space.interpolate(
+            -self.problem.k(self.x, self.dm) * grad(self.ph), name="velocity"
+        )
+
+    def write_vtk(self, filename="pressure", filenumber=0, detailed=False):
         """Writes out the solution to VTk. Remember to call solve() first.
 
         :param str filename: A filename. Defaults to 'pressure'.
         :param int filenumber: A file number if a series of problems is
             solved. Defaults to 0.
         """
-        uh = -self.problem.k(self.x, self.dm) * grad(self.ph)
-        pointdata = {"p": self.ph, "u": uh}
+        pointdata = {"p": self.ph, "u": self.uh}
 
-        try:
-            p_exact = self.problem.p(self.x, self.dm)
-            u_exact = -self.problem.k(self.x, self.dm) * grad(
-                self.problem.p(self.x, self.dm)
-            )
+        if detailed:
+            try:
+                p_exact = self.problem.p(self.x, self.dm)
+                u_exact = -self.problem.k(self.x, self.dm) * grad(
+                    self.problem.p(self.x, self.dm)
+                )
 
-            pointdata.update(
-                {
-                    "p_exact": self.problem.p(self.x, self.dm),
-                    "p_error": p_exact - self.ph,
-                    "u_exact": u_exact,
-                    "u_error": u_exact - uh,
-                }
-            )
-        except:
-            pass
+                pointdata.update(
+                    {
+                        "p_exact": self.problem.p(self.x, self.dm),
+                        "p_error": p_exact - self.ph,
+                        "u_exact": u_exact,
+                        "u_error": u_exact - self.uh,
+                    }
+                )
+            except:
+                pass
 
         self.omega.writeVTK(
             filename + str(filenumber),

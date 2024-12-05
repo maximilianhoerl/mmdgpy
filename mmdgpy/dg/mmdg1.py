@@ -12,6 +12,7 @@ class MMDG1(MMDG2):
         MMDGProblem.
     :ivar omega: The bulk grid view.
     :ivar space: The bulk dG space.
+    :ivar velocity_space: The bulk velocity dG space.
     :ivar x: The bulk spatial coordinate.
     :ivar dm: A domain marker.
     :ivar chi_gamma: An interface indicator.
@@ -23,6 +24,7 @@ class MMDG1(MMDG2):
     :ivar b_bulk: The bilinear form of bulk contributions.
     :ivar l_bulk: The linear form of bulk contributions.
     :ivar storage: The underlying linear algebra backend.
+    :ivar uh: The bulk velocity numerical solution.
     :ivar igridview: The interface grid view.
     :ivar ispace: The interface dG space.
     :ivar x_gamma: The interface spatial coordinate.
@@ -35,6 +37,7 @@ class MMDG1(MMDG2):
         function).
     :ivar c_gamma: The bilinear form of coupling terms (with interface test
         function).
+    :ivar inormal: The normal vector on the interface.
     """
 
     def __init__(
@@ -82,12 +85,12 @@ class MMDG1(MMDG2):
             and is_globally_constant(problem.d2(self.x_gamma))
         ):
 
-            inormal = normals(self.igridview)
+            self.inormal = normals(self.igridview)
 
             self.b_gamma -= (
                 trace(self.ph, self.igridview)("+")
                 * dot(
-                    grad(problem.d_i(self.x_gamma, inormal)),
+                    grad(problem.d_i(self.x_gamma, self.inormal)),
                     problem.k_gamma(self.x_gamma) * grad(self.phi_gamma),
                 )
                 * dx
@@ -95,7 +98,7 @@ class MMDG1(MMDG2):
             self.b_gamma -= (
                 trace(self.ph, self.igridview)("-")
                 * dot(
-                    grad(problem.d_i(self.x_gamma, -inormal)),
+                    grad(problem.d_i(self.x_gamma, -self.inormal)),
                     problem.k_gamma(self.x_gamma) * grad(self.phi_gamma),
                 )
                 * dx
@@ -110,10 +113,10 @@ class MMDG1(MMDG2):
                     problem.k_gamma(self.x_gamma)
                     * 0.5
                     * trp("+")
-                    * grad(problem.d_i(self.x_gamma, inormal("+")))("+")
+                    * grad(problem.d_i(self.x_gamma, self.inormal("+")))("+")
                     + 0.5
                     * trp("-")
-                    * grad(problem.d_i(self.x_gamma, inormal("-")))("-"),
+                    * grad(problem.d_i(self.x_gamma, self.inormal("-")))("-"),
                     self.n_gamma("+"),
                 )
                 * dS
@@ -124,10 +127,10 @@ class MMDG1(MMDG2):
                     problem.k_gamma(self.x_gamma)
                     * 0.5
                     * trm("+")
-                    * grad(problem.d_i(self.x_gamma, -inormal("+")))("+")
+                    * grad(problem.d_i(self.x_gamma, -self.inormal("+")))("+")
                     + 0.5
                     * trm("-")
-                    * grad(problem.d_i(self.x_gamma, -inormal("-")))("-"),
+                    * grad(problem.d_i(self.x_gamma, -self.inormal("-")))("-"),
                     self.n_gamma("+"),
                 )
                 * dS
@@ -137,14 +140,42 @@ class MMDG1(MMDG2):
                 self.b_gamma += (
                     self.phi_gamma
                     * trp
-                    * dot(grad(problem.d_i(self.x_gamma, inormal)), self.n_gamma)
+                    * dot(grad(problem.d_i(self.x_gamma, self.inormal)), self.n_gamma)
                     * self.problem.boundary_dn_gamma(self.x_gamma)
                     * ds
                 )
                 self.b_gamma += (
                     self.phi_gamma
                     * trm
-                    * dot(grad(problem.d_i(self.x_gamma, -inormal)), self.n_gamma)
+                    * dot(grad(problem.d_i(self.x_gamma, -self.inormal)), self.n_gamma)
                     * self.problem.boundary_dn_gamma(self.x_gamma)
                     * ds
                 )
+
+    def _calculate_velocity(self):
+        """Internal method to calculate the velocity field after solving the scheme for the
+        pressure.
+        """
+        self.uh = self.velocity_space.interpolate(
+            -self.problem.k(self.x, self.dm) * grad(self.ph), name="velocity"
+        )
+
+        self.uh_gamma_perp = self.ispace.interpolate(
+            self.problem.k_gamma_perp(self.x_gamma)
+            / self.problem.d(self.x_gamma)
+            * jump(trace(self.ph, self.igridview)),
+            name="velocityGammaPerp",
+        )
+
+        self.uh_gamma_tang = self.velocity_ispace.interpolate(
+            -self.problem.k_gamma(self.x_gamma)
+            / self.problem.d(self.x_gamma)
+            * (
+                grad(self.problem.d(self.x_gamma) * self.ph_gamma)
+                - trace(self.ph, self.igridview)("+")
+                * grad(self.problem.d_i(self.x_gamma, self.inormal))
+                - trace(self.ph, self.igridview)("-")
+                * grad(self.problem.d_i(self.x_gamma, -self.inormal))
+            ),
+            name="velocityGammaTang",
+        )

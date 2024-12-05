@@ -29,6 +29,7 @@ class MMDG2(DG):
         MMDGProblem.
     :ivar omega: The bulk grid view.
     :ivar space: The bulk dG space.
+    :ivar velocity_space: The bulk velocity dG space.
     :ivar x: The bulk spatial coordinate.
     :ivar dm: A domain marker.
     :ivar chi_gamma: An interface indicator.
@@ -40,8 +41,10 @@ class MMDG2(DG):
     :ivar b_bulk: The bilinear form of bulk contributions.
     :ivar l_bulk: The linear form of bulk contributions.
     :ivar storage: The underlying linear algebra backend.
+    :ivar uh: The bulk velocity numerical solution.
     :ivar igridview: The interface grid view.
     :ivar ispace: The interface dG space.
+    :ivar velocity_ispace: The interface velocity dG space.
     :ivar x_gamma: The interface spatial coordinate.
     :ivar phi_gamma: The interface test function.
     :ivar n_gamma: The interface facet normal.
@@ -88,6 +91,7 @@ class MMDG2(DG):
 
         self.igridview = self.omega.hierarchicalGrid.interfaceGrid
         self.ispace = dglagrange(self.igridview, order=order)
+        self.velocity_ispace = dglagrange(self.igridview, dimRange=dim, order=order)
         self.x_gamma = SpatialCoordinate(self.ispace)
 
         mu_gamma = (
@@ -329,7 +333,9 @@ class MMDG2(DG):
         else:
             raise ValueError("Unknown solver: " + solver)
 
-    def write_vtk(self, filename="pressure", filenumber=0):
+        self._calculate_velocity()
+
+    def write_vtk(self, filename="pressure", filenumber=0, detailed=False):
         """Writes out the solution to VTk. Remember to call solve() first.
 
         :param str filename: A filename. Defaults to 'pressure'.
@@ -340,22 +346,31 @@ class MMDG2(DG):
 
         pointdata = {
             "p_Gamma": self.ph_gamma,
-            "d1": self.problem.d1(self.x_gamma),
-            "d2": self.problem.d2(self.x_gamma),
-            "d": self.problem.d(self.x_gamma),
-            "grad_d1": self.problem.grad_d1(self.x_gamma),
-            "grad_d2": self.problem.grad_d2(self.x_gamma),
+            "u_Gamma_perp": self.uh_gamma_perp,
+            "u_Gamma_tang": self.uh_gamma_tang,
         }
 
-        try:
+        if detailed:
             pointdata.update(
                 {
-                    "exact_gamma": self.problem.p_gamma(self.x_gamma),
-                    "error_gamma": self.ph_gamma - self.problem.p_gamma(self.x_gamma),
+                    "d1": self.problem.d1(self.x_gamma),
+                    "d2": self.problem.d2(self.x_gamma),
+                    "d": self.problem.d(self.x_gamma),
+                    "grad_d1": self.problem.grad_d1(self.x_gamma),
+                    "grad_d2": self.problem.grad_d2(self.x_gamma),
                 }
             )
-        except:
-            pass
+
+            try:
+                pointdata.update(
+                    {
+                        "exact_gamma": self.problem.p_gamma(self.x_gamma),
+                        "error_gamma": self.ph_gamma
+                        - self.problem.p_gamma(self.x_gamma),
+                    }
+                )
+            except:
+                pass
 
         self.igridview.writeVTK(
             filename + "Gamma" + str(filenumber),
@@ -381,3 +396,25 @@ class MMDG2(DG):
         error_gamma = sqrt(error_gamma)
 
         return error_bulk, error_gamma, error_total
+
+    def _calculate_velocity(self):
+        """Internal method to calculate the velocity field after solving the scheme for the
+        pressure.
+        """
+        self.uh = self.velocity_space.interpolate(
+            -self.problem.k(self.x, self.dm) * grad(self.ph), name="velocity"
+        )
+
+        self.uh_gamma_perp = self.ispace.interpolate(
+            self.problem.k_gamma_perp(self.x_gamma)
+            / self.problem.d(self.x_gamma)
+            * jump(trace(self.ph, self.igridview)),
+            name="velocityGammaPerp",
+        )
+
+        self.uh_gamma_tang = self.velocity_ispace.interpolate(
+            -self.problem.k_gamma(self.x_gamma)
+            / self.problem.d(self.x_gamma)
+            * grad(self.problem.d(self.x_gamma) * self.ph_gamma),
+            name="velocityGammaTang",
+        )
