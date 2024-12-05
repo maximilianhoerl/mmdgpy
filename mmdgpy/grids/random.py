@@ -5,7 +5,7 @@ from scipy.fft import fft
 ################################################################################
 
 
-def get_gaussian_process(dim, mu, rho, h):
+def get_gaussian_process(dim, mu, rho, h, seed=None):
     """Returns the points of an equidistant grid on [0,1]^dim and two
     realizations of a stationary Gaussian random field on this grid using a
     circulant embedding method.
@@ -17,12 +17,16 @@ def get_gaussian_process(dim, mu, rho, h):
         where c denotes the covariance function of the stationary Gaussian
         field.
     :param float h: The grid width.
+    :param seed: The seed for the random number generator. Defaults to None.
     :raises NotImplementedError: If dim != 1.
     :raises LinAlgError: If the circulant embedding matrix is not positive
         semidefinite.
     """
     if dim != 1:
         raise NotImplementedError
+
+    if seed is not None:
+        np.random.seed(seed)
 
     m = int(round(1.0 / h) + 1)
     x = np.linspace(0.0, 1.0, m + 1)  # 1d grid
@@ -48,7 +52,7 @@ def get_gaussian_process(dim, mu, rho, h):
 ################################################################################
 
 
-def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None):
+def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None, seed=None):
     """Returns aperture functions d1, d2 on [0,1]^(dim-1) that define the
     geometry of a fracture. The aperture functions are created as linear
     spline interpolants from two realizations of a (dim-1)-dimensional
@@ -69,12 +73,13 @@ def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None):
     :param file: A filename. The value of the Gaussian aperture and the
         corresponding grid are saved to the file if a filename is provided.
         By default no such file is created.
+    :param seed: The seed for the random number generator. Defaults to None.
     :raises NotImplementedError: If dim != 2.
     """
     if dim != 2:
         raise NotImplementedError
 
-    xh, z1, z2 = get_gaussian_process(dim - 1, mu, rho, h)
+    xh, z1, z2 = get_gaussian_process(dim - 1, mu, rho, h, seed=seed)
 
     overlap = np.where((z1 + z2) <= dmin)
 
