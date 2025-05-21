@@ -28,7 +28,7 @@ def get_gaussian_process(dim, mu, rho, h, seed=None):
     if seed is not None:
         np.random.seed(seed)
 
-    m = int(round(1.0 / h) + 1)
+    m = int(round(1.0 / h))
     x = np.linspace(0.0, 1.0, m + 1)  # 1d grid
 
     # first column of covariance matrix and its circulant embedding matrix
@@ -71,8 +71,9 @@ def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None, seed=None):
     :param float dmin: The minimum aperture of the fracture. Defaults to
         1e-6.
     :param file: A filename. The value of the Gaussian aperture and the
-        corresponding grid are saved to the file if a filename is provided.
-        By default no such file is created.
+        corresponding grid are saved to the file if a filename is provided. 
+        If the filename ends with ".csv", the data is saved in CSV format,
+        otherwise in NumPy's .npz format. By default no such file is created.
     :param seed: The seed for the random number generator. Defaults to None.
     :raises NotImplementedError: If dim != 2.
     """
@@ -93,7 +94,12 @@ def get_gaussian_aperture(dim, mu, rho, h, dmin=1e-6, file=None, seed=None):
         z2[overlap] += correction
 
     if file is not None:
-        np.savez(file, xh=xh, d1=z1, d2=z2)
+        if str(file).lower().endswith('.csv'):
+            data = np.column_stack((xh, z1, z2))
+            header = "xh,d1,d2"
+            np.savetxt(file, data, delimiter=",", header=header, comments='')
+        else:
+            np.savez(file, xh=xh, d1=z1, d2=z2)
 
     d1 = interp1d(xh, z1)
     d2 = interp1d(xh, z2)
